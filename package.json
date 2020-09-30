@@ -1,0 +1,9 @@
+{
+  "name": "wordmark-codemirror",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@codemirror/next": "^0.12.0"
+  }
+}
