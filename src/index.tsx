@@ -7,7 +7,7 @@ import { heading } from './heading';
 
 let startState = EditorState.create({
   doc: '',
-  extensions: [phraseEmphasis(), keymap(defaultKeymap)],
+  extensions: [phraseEmphasis(), heading(), keymap(defaultKeymap)],
 });
 
 let view = new EditorView({

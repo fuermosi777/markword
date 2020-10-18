@@ -39,7 +39,6 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       let prevFrom: Number, prevTo: Number;
       this.decorations = this.decorations.update({
         filter: (from, to) => {
-          console.log(from, to);
           // Filter out decorations if it's wrapped by another emphasis decoration.
           if (from > prevFrom && to < prevTo) {
             return false;

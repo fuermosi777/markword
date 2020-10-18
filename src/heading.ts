@@ -10,32 +10,16 @@ import {
 } from '@codemirror/next/view';
 
 export function heading(): Extension {
-  return [headingDecorationPlugin, headingState];
+  return [headingDecorationPlugin];
 }
 
 //   const imageRE = /!\[([^\]]*)]\(([^)" ]+)(?: ("[^"=]+"))?(?: =(\d+)x?(\d*))?\)/g;
 //   const linkRE = /\[([^\[\]]+)\]\([^\)\(]+\)/g;
 //   const listRE = /([*\-+]|[0-9]+([.)]))\s/g;
 //   const taskRE = /([*\-+]|[0-9]+([.)]))\s\[(x| )\]\s/g;
-//   const headerRE = /^(#{1,6})\s{1}/g;
 //   const tableRE = /^\|.*\|$/g;
 
-const headingRE = /^#{1,6}\s.*/g;
-const headingIndicatorRE = /^#{1,6}\s{1}/g;
-
-const headingState = StateField.define<DecorationSet>({
-  create() {
-    return Decoration.none;
-  },
-  update(value, tr) {
-    if (tr.selection) {
-      let onSelection = false,
-        { head } = tr.selection.primary;
-      console.log(value, head);
-    }
-    return value;
-  },
-});
+const headingRE = /^#{1,6}\s{1}/g;
 
 const headingDecorationPlugin = ViewPlugin.fromClass(
   class {
@@ -65,7 +49,7 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
 
       for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
         if (!cursor.lineBreak) {
-          let headingIndicator = headingIndicatorRE.exec(cursor.value);
+          let headingIndicator = headingRE.exec(cursor.value);
           //   let heading = headingRE.exec(cursor.value);
           //   if (heading) {
           //     let deco = Decoration.mark({ class: 'wordmark-heading' });
