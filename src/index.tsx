@@ -4,10 +4,11 @@ import { defaultKeymap } from '@codemirror/next/commands';
 import { phraseEmphasis } from './phraseEmphasis';
 import './styles.less';
 import { heading } from './heading';
+import { wordmarkTheme } from './wordmarkTheme';
 
 let startState = EditorState.create({
   doc: '',
-  extensions: [phraseEmphasis(), heading(), keymap(defaultKeymap)],
+  extensions: [wordmarkTheme(), phraseEmphasis(), heading(), keymap(defaultKeymap)],
 });
 
 let view = new EditorView({

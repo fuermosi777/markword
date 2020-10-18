@@ -1,16 +1,19 @@
-import { ChangeDesc, Extension, StateEffect, StateField } from '@codemirror/next/state';
+import { Extension } from '@codemirror/next/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
   Range,
+  themeClass,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
 } from '@codemirror/next/view';
+import { isCursorInside } from './utils';
+import { codeFontFamily } from './theme';
 
 export function phraseEmphasis(): Extension {
-  return [phraseEmphasisDecorationPlugin];
+  return [phraseEmphasisDecorationPlugin, baseTheme];
 }
 
 const emphasisRE = {
@@ -47,16 +50,8 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
           prevTo = to;
 
           // Filter out decorations when the cursor is inside.
-          if (update) {
-            let latestTr = update.transactions[update.transactions.length - 1];
-            if (latestTr && latestTr.selection) {
-              if (
-                latestTr.selection.primary.head >= from &&
-                latestTr.selection.primary.head <= to
-              ) {
-                return false;
-              }
-            }
+          if (update && isCursorInside(update, from, to)) {
+            return false;
           }
           return true;
         },
@@ -124,7 +119,7 @@ class BoldWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.classList.add(`wordmark-bold`);
+    span.classList.add(themeClass('bold'));
     return span;
   }
 
@@ -143,7 +138,7 @@ class ItalicWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.classList.add(`wordmark-italic`);
+    span.classList.add(themeClass('italic'));
     return span;
   }
 
@@ -162,7 +157,7 @@ class InlineCodeWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.classList.add(`wordmark-inline-code`);
+    span.classList.add(themeClass('inline-code'));
     return span;
   }
 
@@ -170,3 +165,15 @@ class InlineCodeWidget extends WidgetType {
     return false;
   }
 }
+
+const baseTheme = EditorView.baseTheme({
+  $bold: {
+    fontWeight: 'bold',
+  },
+  $italic: {
+    fontStyle: 'italic',
+  },
+  '$inline-code': {
+    ...codeFontFamily,
+  },
+});
