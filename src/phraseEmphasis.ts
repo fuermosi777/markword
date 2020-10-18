@@ -16,31 +16,8 @@ export function phraseEmphasis(): Extension {
 const emphasisRE = {
   bold: [/(?<!\*)\*\*([^\*]+?)\*\*(?!\*)/g, /(?<!_)__([^_]+?)__(?!_)/g],
   italic: [/(?<!\*)\*([^\*]+?)\*(?!\*)/g, /(?<!_)_([^_]+?)_(?!_)/g],
+  inlineCode: [/(?<!`)`([^`]+?)`(?!`)/g],
 };
-
-type NoValueRange = { from: number; to: number };
-
-function mapRange(range: NoValueRange, mapping: ChangeDesc) {
-  let from = mapping.mapPos(range.from, 1),
-    to = mapping.mapPos(range.to, -1);
-  return from >= to ? undefined : { from, to };
-}
-
-const boldEffect = StateEffect.define<NoValueRange>({ map: mapRange });
-
-const emphasisState = StateField.define<DecorationSet>({
-  create() {
-    return Decoration.none;
-  },
-  update(value, tr) {
-    if (tr.selection) {
-      let onSelection = false,
-        { head } = tr.selection.primary;
-      console.log(head);
-    }
-    return value;
-  },
-});
 
 const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
   class {
@@ -58,8 +35,19 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       decorations.sort((deco1, deco2) => (deco1.from > deco2.from ? 1 : -1));
       this.decorations = Decoration.set(decorations);
 
+      // Iterate all decorations and remove those shouldn't be created.
+      let prevFrom: Number, prevTo: Number;
       this.decorations = this.decorations.update({
         filter: (from, to) => {
+          console.log(from, to);
+          // Filter out decorations if it's wrapped by another emphasis decoration.
+          if (from > prevFrom && to < prevTo) {
+            return false;
+          }
+          prevFrom = from;
+          prevTo = to;
+
+          // Filter out decorations when the cursor is inside.
           if (update) {
             let latestTr = update.transactions[update.transactions.length - 1];
             if (latestTr && latestTr.selection) {
@@ -101,7 +89,19 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
         for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
-              let deco = Decoration.mark({ class: 'wordmark-italic' });
+              let deco = Decoration.replace({ widget: new ItalicWidget(m[0], m[1]) });
+              decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
+            }
+          }
+          pos += cursor.value.length;
+        }
+      }
+
+      for (const r of emphasisRE.inlineCode) {
+        for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+          if (!cursor.lineBreak) {
+            while ((m = r.exec(cursor.value))) {
+              let deco = Decoration.replace({ widget: new InlineCodeWidget(m[0], m[1]) });
               decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
             }
           }
@@ -125,7 +125,45 @@ class BoldWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.style.fontWeight = 'bold';
+    span.classList.add(`wordmark-bold`);
+    return span;
+  }
+
+  ignoreEvent() {
+    return false;
+  }
+}
+
+class ItalicWidget extends WidgetType {
+  constructor(readonly rawValue: string, readonly visibleValue: string) {
+    super();
+  }
+  eq(other: ItalicWidget) {
+    return this.rawValue === other.rawValue;
+  }
+  toDOM() {
+    let span = document.createElement('span');
+    span.textContent = this.visibleValue;
+    span.classList.add(`wordmark-italic`);
+    return span;
+  }
+
+  ignoreEvent() {
+    return false;
+  }
+}
+
+class InlineCodeWidget extends WidgetType {
+  constructor(readonly rawValue: string, readonly visibleValue: string) {
+    super();
+  }
+  eq(other: InlineCodeWidget) {
+    return this.rawValue === other.rawValue;
+  }
+  toDOM() {
+    let span = document.createElement('span');
+    span.textContent = this.visibleValue;
+    span.classList.add(`wordmark-inline-code`);
     return span;
   }
 
