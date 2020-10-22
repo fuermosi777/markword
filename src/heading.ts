@@ -16,15 +16,11 @@ export function heading(): Extension {
 }
 
 //   const imageRE = /!\[([^\]]*)]\(([^)" ]+)(?: ("[^"=]+"))?(?: =(\d+)x?(\d*))?\)/g;
-//   const linkRE = /\[([^\[\]]+)\]\([^\)\(]+\)/g;
-//   const listRE = /([*\-+]|[0-9]+([.)]))\s/g;
-//   const taskRE = /([*\-+]|[0-9]+([.)]))\s\[(x| )\]\s/g;
 //   const tableRE = /^\|.*\|$/g;
 // quote
 // codeblock
 // horizontal lines
 // backslash escape
-// auto link: <http://example.com/>
 
 const headingRE = /^#{1,6}\s{1}/g;
 const MaxHeadingLevel = 6;

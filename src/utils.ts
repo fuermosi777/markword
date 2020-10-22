@@ -1,3 +1,4 @@
+import { Text } from '@codemirror/next/text';
 import { ViewUpdate } from '@codemirror/next/view';
 
 function isCursorInside(update: ViewUpdate, from: number, to: number): boolean {
@@ -11,4 +12,21 @@ function isCursorInside(update: ViewUpdate, from: number, to: number): boolean {
   return false;
 }
 
-export { isCursorInside };
+function eachLineMatchRe(
+  doc: Text,
+  from: number,
+  to: number,
+  re: RegExp,
+  func: (match: any, pos: number) => void,
+) {
+  for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+    if (!cursor.lineBreak) {
+      while ((m = re.exec(cursor.value))) {
+        func(m, pos);
+      }
+    }
+    pos += cursor.value.length;
+  }
+}
+
+export { isCursorInside, eachLineMatchRe };

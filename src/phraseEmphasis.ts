@@ -12,6 +12,8 @@ import {
 import { isCursorInside } from './utils';
 import { codeFontFamily } from './theme';
 
+// TODO: when typing *, auto complete the corresponding *
+
 export function phraseEmphasis(): Extension {
   return [phraseEmphasisDecorationPlugin, baseTheme];
 }

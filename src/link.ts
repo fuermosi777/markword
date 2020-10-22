@@ -10,7 +10,10 @@ import {
 } from '@codemirror/next/view';
 import { isCursorInside } from './utils';
 
+// TODO: add ref link and quick link "[Google][]"
+
 const linkRE = /\[([^\[\]]+)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?\)/g;
+const autoLinkRE = /<(https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)>/g;
 
 export function link(): Extension {
   return [linkDecorationPlugin];
@@ -60,6 +63,22 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
                 displayText: m[1],
                 url: m[2],
                 title: m[3],
+              }),
+              inclusive: true,
+            });
+            decorations.push(linkDecoration.range(pos + m.index, pos + m.index + m[0].length));
+          }
+        }
+        pos += cursor.value.length;
+      }
+
+      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+        if (!cursor.lineBreak) {
+          while ((m = autoLinkRE.exec(cursor.value))) {
+            const linkDecoration = Decoration.replace({
+              widget: new LinkWidget({
+                displayText: m[1],
+                url: m[1],
               }),
               inclusive: true,
             });
