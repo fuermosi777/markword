@@ -9,7 +9,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/next/view';
-import { eachLineMatchRe } from './utils';
+import { eachLineMatchRe, isCursorInside } from './utils';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.
 const listRE = /^\s*([*\-+]|[0-9]+([.)]))\s(?!(?:\[.\]))/g;
@@ -34,6 +34,16 @@ const listTaskPlugin = ViewPlugin.fromClass(
       }
       decorations.sort((deco1, deco2) => (deco1.from > deco2.from ? 1 : -1));
       this.decorations = Decoration.set(decorations);
+
+      this.decorations = this.decorations.update({
+        filter: (from, to, value: Decoration) => {
+          if (update && isCursorInside(update, from, to, false)) {
+            return false;
+          }
+
+          return true;
+        },
+      });
     }
 
     update(update: ViewUpdate) {

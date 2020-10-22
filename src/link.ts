@@ -37,7 +37,7 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to)) {
+          if (update && isCursorInside(update, from, to, false)) {
             return false;
           }
 
