@@ -8,7 +8,7 @@
     "build": "webpack"
   },
   "dependencies": {
-    "@codemirror/next": "^0.13.1"
+    "@codemirror/next": "^0.14.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.2.0",

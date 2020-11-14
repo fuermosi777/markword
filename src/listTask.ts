@@ -19,6 +19,12 @@ export function listTask(): Extension {
   return [listTaskPlugin, baseTheme];
 }
 
+// const toggleTask = EditorView.domEventHandlers({
+//   mousedown: (event, view) => {
+//     console.log(event.target, view.state);
+//   },
+// });
+
 const listTaskPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
@@ -36,8 +42,8 @@ const listTaskPlugin = ViewPlugin.fromClass(
       this.decorations = Decoration.set(decorations);
 
       this.decorations = this.decorations.update({
-        filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, false)) {
+        filter: (from, to) => {
+          if (update && isCursorInside(update, from, to, /*inclusive=*/ false)) {
             return false;
           }
 
@@ -61,7 +67,7 @@ const listTaskPlugin = ViewPlugin.fromClass(
       });
 
       eachLineMatchRe(doc, from, to, taskRE, (m, pos) => {
-        let deco = Decoration.replace({ widget: new CheckWidget(m[2] !== ' ') });
+        let deco = Decoration.replace({ widget: new CheckWidget(m[2] !== ' ', this.view) });
         decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
       });
     }
@@ -94,7 +100,7 @@ class BulletWidget extends WidgetType {
 }
 
 class CheckWidget extends WidgetType {
-  constructor(readonly checked: boolean) {
+  constructor(public checked: boolean, readonly view: EditorView) {
     super();
   }
 
@@ -103,9 +109,29 @@ class CheckWidget extends WidgetType {
   }
 
   toDOM() {
-    let cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = this.checked;
+    const cb = document.createElement('span');
+    cb.className = themeClass('checkbox');
+    if (this.checked) {
+      cb.classList.add(themeClass('checked'));
+    }
+    const cm = document.createElement('div');
+    cm.className = themeClass('checkmark');
+    cm.classList.add(themeClass('draw'));
+    cb.appendChild(cm);
+
+    cb.addEventListener('mousedown', (e) => {
+      const pos = this.view.posAtDOM(cb);
+      if (!this.checked) {
+        this.view.dispatch({
+          changes: { from: pos + 3, to: pos + 4, insert: 'x' },
+          // selection: { anchor: pos + 4 },
+        });
+      } else {
+        this.view.dispatch({
+          changes: { from: pos + 3, to: pos + 4, insert: ' ' },
+        });
+      }
+    });
     return cb;
   }
 
@@ -115,5 +141,36 @@ class CheckWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  '$list-bullet': { fontSize: '24px' },
+  // '$list-bullet': { fontSize: '24px' },
+  $checkbox: {
+    border: '1px solid #C1C3C6',
+    borderRadius: '4px',
+    width: '10px',
+    height: '10px',
+    display: 'inline-block',
+    marginRight: '5px',
+    transition: 'all 0.2s',
+    position: 'relative',
+  },
+  '$checkbox:hover': {
+    transform: 'scale(1.1)',
+  },
+  $checked: {
+    background: '#2D63BE',
+    borderColor: '#2D63BE',
+    animation: 'none',
+    transition: 'border 500ms ease-out',
+  },
+  $checkmark: {
+    transform: 'scaleX(-1) rotate(135deg)',
+    opacity: 1,
+    height: '7px',
+    width: '4px',
+    transformOrigin: 'left top',
+    borderRight: '1px solid white',
+    borderTop: '1px solid white',
+    left: '0px',
+    top: '5px',
+    position: 'absolute',
+  },
 });
