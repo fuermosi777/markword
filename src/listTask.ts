@@ -109,15 +109,12 @@ class CheckWidget extends WidgetType {
   }
 
   toDOM() {
-    const cb = document.createElement('span');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
     cb.className = themeClass('checkbox');
     if (this.checked) {
-      cb.classList.add(themeClass('checked'));
+      cb.checked = true;
     }
-    const cm = document.createElement('div');
-    cm.className = themeClass('checkmark');
-    cm.classList.add(themeClass('draw'));
-    cb.appendChild(cm);
 
     cb.addEventListener('mousedown', (e) => {
       const pos = this.view.posAtDOM(cb);
@@ -145,8 +142,6 @@ const baseTheme = EditorView.baseTheme({
   $checkbox: {
     border: '1px solid #C1C3C6',
     borderRadius: '4px',
-    width: '10px',
-    height: '10px',
     display: 'inline-block',
     marginRight: '5px',
     transition: 'all 0.2s',
@@ -154,23 +149,5 @@ const baseTheme = EditorView.baseTheme({
   },
   '$checkbox:hover': {
     transform: 'scale(1.1)',
-  },
-  $checked: {
-    background: '#2D63BE',
-    borderColor: '#2D63BE',
-    animation: 'none',
-    transition: 'border 500ms ease-out',
-  },
-  $checkmark: {
-    transform: 'scaleX(-1) rotate(135deg)',
-    opacity: 1,
-    height: '7px',
-    width: '4px',
-    transformOrigin: 'left top',
-    borderRight: '1px solid white',
-    borderTop: '1px solid white',
-    left: '0px',
-    top: '5px',
-    position: 'absolute',
   },
 });
