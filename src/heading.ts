@@ -15,13 +15,6 @@ export function heading(): Extension {
   return [headingDecorationPlugin, baseTheme];
 }
 
-//   const imageRE = /!\[([^\]]*)]\(([^)" ]+)(?: ("[^"=]+"))?(?: =(\d+)x?(\d*))?\)/g;
-//   const tableRE = /^\|.*\|$/g;
-// quote
-// codeblock
-// horizontal lines
-// backslash escape
-
 const headingRE = /^#{1,6}\s{1}/g;
 const MaxHeadingLevel = 6;
 

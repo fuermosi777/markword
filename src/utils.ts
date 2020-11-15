@@ -33,17 +33,18 @@ function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive 
 function eachLineMatchRe(
   doc: Text,
   from: number,
+  // TODO: use this to save cost.
   to: number,
   re: RegExp,
   func: (match: any, pos: number) => void,
 ) {
-  for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
-    if (!cursor.lineBreak) {
-      while ((m = re.exec(cursor.value))) {
+  for (let pos = from, iter = doc.iterLines(from), m; !iter.next().done; ) {
+    if (!iter.lineBreak) {
+      while ((m = re.exec(iter.value))) {
         func(m, pos);
       }
     }
-    pos += cursor.value.length;
+    pos += iter.value.length + 1;
   }
 }
 

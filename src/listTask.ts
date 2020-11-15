@@ -19,12 +19,6 @@ export function listTask(): Extension {
   return [listTaskPlugin, baseTheme];
 }
 
-// const toggleTask = EditorView.domEventHandlers({
-//   mousedown: (event, view) => {
-//     console.log(event.target, view.state);
-//   },
-// });
-
 const listTaskPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;

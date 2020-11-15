@@ -9,17 +9,17 @@ import {
   WidgetType,
 } from '@codemirror/next/view';
 import { isCursorInside } from './utils';
+import * as assert from 'assert';
 
-// TODO: add ref link and quick link "[Google][]"
+// TODO: reference style
+// ![Alt text][id]
+const imageRE = /!\[([^\[\]]*)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?\)/g;
 
-const linkRE = /(?<!\!)\[([^\[\]]+)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?\)/g;
-const autoLinkRE = /<(https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)>/g;
-
-export function link(): Extension {
-  return [linkDecorationPlugin];
+export function image(): Extension {
+  return [imageDecorationPlugin];
 }
 
-const linkDecorationPlugin = ViewPlugin.fromClass(
+const imageDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
 
@@ -37,7 +37,7 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, false)) {
+          if (update && isCursorInside(update, from, to, /* inclusive= */ false)) {
             return false;
           }
 
@@ -57,28 +57,12 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
 
       for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
         if (!cursor.lineBreak) {
-          while ((m = linkRE.exec(cursor.value))) {
+          while ((m = imageRE.exec(cursor.value))) {
             const linkDecoration = Decoration.replace({
-              widget: new LinkWidget({
-                displayText: m[1],
+              widget: new ImageWidget({
+                altText: m[1],
                 url: m[2],
                 title: m[3],
-              }),
-              inclusive: true,
-            });
-            decorations.push(linkDecoration.range(pos + m.index, pos + m.index + m[0].length));
-          }
-        }
-        pos += cursor.value.length;
-      }
-
-      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
-        if (!cursor.lineBreak) {
-          while ((m = autoLinkRE.exec(cursor.value))) {
-            const linkDecoration = Decoration.replace({
-              widget: new LinkWidget({
-                displayText: m[1],
-                url: m[1],
               }),
               inclusive: true,
             });
@@ -94,33 +78,43 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
   },
 );
 
-interface LinkWidgetSpec {
-  readonly displayText: string;
+interface ImageWidgetSpec {
+  readonly altText?: string;
   readonly url?: string;
   readonly title?: string;
-  // [an example][id] reference style link
+  // ![Alt text][id] reference style link
   readonly ref?: string;
 }
 
-class LinkWidget extends WidgetType {
-  constructor(readonly spec: LinkWidgetSpec) {
+class ImageWidget extends WidgetType {
+  constructor(readonly spec: ImageWidgetSpec) {
     super();
+    assert.ok(spec.url || spec.ref);
   }
 
-  eq(other: LinkWidget) {
-    return this.spec.displayText === other.spec.displayText && this.spec.url === other.spec.url;
+  eq(other: ImageWidget) {
+    return (
+      this.spec.altText === other.spec.altText &&
+      this.spec.title === other.spec.title &&
+      this.spec.ref === other.spec.ref
+    );
   }
 
   toDOM() {
-    let link = document.createElement('a');
-    link.textContent = this.spec.displayText;
+    let image = document.createElement('img');
     if (this.spec.url) {
-      link.href = this.spec.url;
+      image.src = this.spec.url;
     }
     if (this.spec.title) {
-      link.title = this.spec.title;
+      image.title = this.spec.title;
     }
-    return link;
+    image.addEventListener('loadstart', function (e) {
+      console.log('Image load started');
+    });
+    image.addEventListener('loadend', function (e) {
+      console.log('Image load finished');
+    });
+    return image;
   }
 
   ignoreEvent(): boolean {

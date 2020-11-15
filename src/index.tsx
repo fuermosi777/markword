@@ -7,6 +7,7 @@ import { heading } from './heading';
 import { wordmarkTheme } from './wordmarkTheme';
 import { link } from './link';
 import { listTask } from './listTask';
+import { image } from './image';
 
 let startState = EditorState.create({
   doc: `# Introduction
@@ -27,6 +28,26 @@ And to-do list!
 - [ ] Do yoga
 - [ ] Repair the floor
 
+![image alt text](https://picsum.photos/200df "xtt") 
+
+## Blockquotes
+
+> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+> Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+> 
+> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+> id sem consectetuer libero luctus adipiscing.
+
+*lazy mode*
+
+> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+
+> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+id sem consectetuer libero luctus adipiscing.
+
 `,
   extensions: [
     wordmarkTheme(),
@@ -34,6 +55,7 @@ And to-do list!
     phraseEmphasis(),
     heading(),
     link(),
+    image(),
     keymap(defaultKeymap),
   ],
 });
