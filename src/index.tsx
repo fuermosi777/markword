@@ -8,6 +8,7 @@ import { wordmarkTheme } from './wordmarkTheme';
 import { link } from './link';
 import { listTask } from './listTask';
 import { image } from './image';
+import { blockquote } from './blockquote';
 
 let startState = EditorState.create({
   doc: `# Introduction
@@ -56,6 +57,7 @@ id sem consectetuer libero luctus adipiscing.
     heading(),
     link(),
     image(),
+    blockquote(),
     keymap(defaultKeymap),
   ],
 });

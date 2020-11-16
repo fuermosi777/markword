@@ -1,5 +1,5 @@
 import { Text } from '@codemirror/next/text';
-import { ViewUpdate } from '@codemirror/next/view';
+import { ViewUpdate, WidgetType } from '@codemirror/next/view';
 
 /**
  * Check if cursor is inside the widget.
@@ -48,4 +48,23 @@ function eachLineMatchRe(
   }
 }
 
-export { isCursorInside, eachLineMatchRe };
+class EmptyWidget extends WidgetType {
+  constructor() {
+    super();
+  }
+
+  eq(other: EmptyWidget) {
+    return false;
+  }
+
+  toDOM() {
+    let span = document.createElement('span');
+    return span;
+  }
+
+  ignoreEvent(): boolean {
+    return false;
+  }
+}
+
+export { isCursorInside, eachLineMatchRe, EmptyWidget };

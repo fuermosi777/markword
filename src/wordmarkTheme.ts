@@ -8,4 +8,9 @@ export function wordmarkTheme(): Extension {
 
 const baseTheme = EditorView.baseTheme({
   $line: { ...regularFontFamily },
+  $$focused: { outline: 'none' },
+  $$wrap: {
+    width: '800px',
+    margin: '0 auto',
+  },
 });

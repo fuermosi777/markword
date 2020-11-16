@@ -1,5 +1,4 @@
-// quote
 // codeblock
 // horizontal lines
-// backslash escape
+// yaml header
 // table?
