@@ -9,6 +9,7 @@ import { link } from './link';
 import { listTask } from './listTask';
 import { image } from './image';
 import { blockquote } from './blockquote';
+import { codeblock } from './codeblock';
 
 let startState = EditorState.create({
   doc: `# Introduction
@@ -29,7 +30,7 @@ And to-do list!
 - [ ] Do yoga
 - [ ] Repair the floor
 
-![image alt text](https://picsum.photos/200df "xtt") 
+![image alt text](https://picsum.photos/200 "xtt") 
 
 ## Blockquotes
 
@@ -49,6 +50,12 @@ Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
 > Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
 id sem consectetuer libero luctus adipiscing.
 
+\`\`\`javascript
+var makeFunc = function() {
+  return 3;
+}
+\`\`\`
+
 `,
   extensions: [
     wordmarkTheme(),
@@ -58,7 +65,9 @@ id sem consectetuer libero luctus adipiscing.
     link(),
     image(),
     blockquote(),
+    codeblock(),
     keymap(defaultKeymap),
+    EditorView.lineWrapping,
   ],
 });
 

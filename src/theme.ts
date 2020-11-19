@@ -3,5 +3,5 @@ export const regularFontFamily = {
 };
 
 export const codeFontFamily = {
-  fontFamily: 'monaco',
+  fontFamily: 'monaco !important',
 };

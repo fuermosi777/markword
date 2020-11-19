@@ -7,7 +7,6 @@ import {
   themeClass,
   ViewPlugin,
   ViewUpdate,
-  WidgetType,
 } from '@codemirror/next/view';
 import { EmptyWidget, isCursorInside } from './utils';
 
