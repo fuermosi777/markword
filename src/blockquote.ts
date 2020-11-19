@@ -16,12 +16,11 @@ export function blockquote(): Extension {
 
 // TODO: add lazy block style
 
-const blockquoteRE = /^>\s{1}/g;
+const blockquoteRE = /^>\s{1}/;
 
 const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
-    headerDeco?: Decoration;
 
     constructor(public view: EditorView) {
       this.recompute();
@@ -37,13 +36,7 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (
-            update &&
-            isCursorInside(update, from, to) &&
-            // Only check cursor is in the header widget, ignore line decoration.
-            this.headerDeco &&
-            value.eq(this.headerDeco)
-          ) {
+          if (update && isCursorInside(update, from, to)) {
             return false;
           }
 
@@ -60,15 +53,26 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 
     getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
       let { doc } = this.view.state;
+      let insideBlockquote = false;
+      let isLastLineBreak = false;
 
-      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
         if (!cursor.lineBreak) {
-          while ((m = blockquoteRE.exec(cursor.value))) {
-            this.headerDeco = Decoration.replace({
+          let m = cursor.value.match(blockquoteRE);
+          if (m) {
+            insideBlockquote = true;
+            let deco = Decoration.replace({
               widget: new EmptyWidget(),
               inclusive: true,
             });
-            decorations.push(this.headerDeco.range(pos + m.index, pos + m.index + m[0].length));
+            decorations.push(deco.range(pos, pos + m[0].length));
+            const bq = Decoration.line({
+              attributes: {
+                class: themeClass(`blockquote`),
+              },
+            });
+            decorations.push(bq.range(pos));
+          } else if (insideBlockquote) {
             const bq = Decoration.line({
               attributes: {
                 class: themeClass(`blockquote`),
@@ -76,6 +80,12 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
             });
             decorations.push(bq.range(pos));
           }
+          isLastLineBreak = false;
+        } else {
+          if (isLastLineBreak) {
+            insideBlockquote = false;
+          }
+          isLastLineBreak = true;
         }
         pos += cursor.value.length;
       }
