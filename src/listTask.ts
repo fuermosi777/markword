@@ -12,7 +12,7 @@ import {
 import { eachLineMatchRe, isCursorInside } from './utils';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.
-const listRE = /^\s*([*\-+]|[0-9]+([.)]))\s(?!(?:\[.\]))/g;
+const listRE = /^\s*([\*\-\+]|[0-9]+([.)]))\s(?!(?:\[.\]))(?![\*\-])/g;
 const taskRE = /^\s*([*\-+])\s\[(x| )\]\s/g;
 
 export function listTask(): Extension {

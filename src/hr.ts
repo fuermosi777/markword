@@ -7,16 +7,17 @@ import {
   themeClass,
   ViewPlugin,
   ViewUpdate,
+  WidgetType,
 } from '@codemirror/next/view';
-import { EmptyWidget, isCursorInside } from './utils';
+import { isCursorInside } from './utils';
 
-export function blockquote(): Extension {
-  return [blockquoteDecorationPlugin, baseTheme];
+export function hr(): Extension {
+  return [hrDecorationPlugin, baseTheme];
 }
 
-const blockquoteRE = /^>\s{1}/;
+const hrRE = /^( ?[-_*]){3,} ?[\t]*$/;
 
-const blockquoteDecorationPlugin = ViewPlugin.fromClass(
+const hrDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
 
@@ -51,39 +52,17 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 
     getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
       let { doc } = this.view.state;
-      let insideBlockquote = false;
-      let isLastLineBreak = false;
 
-      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
+      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
         if (!cursor.lineBreak) {
-          let m = cursor.value.match(blockquoteRE);
+          let m = cursor.value.match(hrRE);
           if (m) {
-            insideBlockquote = true;
-            let deco = Decoration.replace({
-              widget: new EmptyWidget(),
+            const hrDeco = Decoration.replace({
+              widget: new HrIndicatorWidget(),
               inclusive: true,
             });
-            decorations.push(deco.range(pos, pos + m[0].length));
-            const bq = Decoration.line({
-              attributes: {
-                class: themeClass(`blockquote`),
-              },
-            });
-            decorations.push(bq.range(pos));
-          } else if (insideBlockquote) {
-            const bq = Decoration.line({
-              attributes: {
-                class: themeClass(`blockquote`),
-              },
-            });
-            decorations.push(bq.range(pos));
+            decorations.push(hrDeco.range(pos, pos + m[0].length));
           }
-          isLastLineBreak = false;
-        } else {
-          if (isLastLineBreak) {
-            insideBlockquote = false;
-          }
-          isLastLineBreak = true;
         }
         pos += cursor.value.length;
       }
@@ -94,10 +73,33 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   },
 );
 
+class HrIndicatorWidget extends WidgetType {
+  constructor() {
+    super();
+  }
+
+  eq(other: HrIndicatorWidget) {
+    return false;
+  }
+
+  toDOM() {
+    let span = document.createElement('span');
+    span.className = themeClass('hr');
+    return span;
+  }
+
+  ignoreEvent(): boolean {
+    return false;
+  }
+}
+
 const baseTheme = EditorView.baseTheme({
-  $blockquote: {
-    backgroundColor: '#F9F9F9',
-    paddingLeft: '10px',
-    borderLeft: '4px solid gray',
+  $hr: {
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    height: '1px',
+    backgroundColor: '#ccc',
+    transform: 'translateY(10px)',
   },
 });
