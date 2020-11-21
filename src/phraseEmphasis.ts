@@ -19,9 +19,9 @@ export function phraseEmphasis(): Extension {
 }
 
 const emphasisRE = {
-  bold: [/(?<!\*)\*\*([^\*]+?)\*\*(?!\*)/g, /(?<!_)__([^_]+?)__(?!_)/g],
-  italic: [/(?<!\*)\*([^\*]+?)\*(?!\*)/g, /(?<!_)_([^_]+?)_(?!_)/g],
-  inlineCode: [/(?<!`)`([^`]+?)`(?!`)/g],
+  bold: [/\*\*([^\*]+?)\*\*(?!\*)/g, /__([^_]+?)__(?!_)/g],
+  italic: [/\*([^\*]+?)\*(?!\*)/g, /_([^_]+?)_(?!_)/g],
+  inlineCode: [/`([^`]+?)`(?!`)/g],
 };
 
 const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
@@ -72,6 +72,8 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
         for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
+              // An edge case.
+              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*') continue;
               let deco = Decoration.replace({ widget: new BoldWidget(m[0], m[1]) });
               decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
             }
@@ -84,6 +86,8 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
         for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
+              // An edge case.
+              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*') continue;
               let deco = Decoration.replace({ widget: new ItalicWidget(m[0], m[1]) });
               decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
             }
@@ -96,6 +100,8 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
         for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
+              // An edge case.
+              if (m.input[m.index - 1] === '`') continue;
               let deco = Decoration.replace({ widget: new InlineCodeWidget(m[0], m[1]) });
               decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
             }
