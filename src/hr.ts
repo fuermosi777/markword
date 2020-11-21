@@ -45,7 +45,7 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
     }
 
     update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet) {
+      if (update.docChanged || update.selectionSet || update.viewportChanged) {
         this.recompute(update);
       }
     }

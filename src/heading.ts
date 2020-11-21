@@ -21,7 +21,6 @@ const MaxHeadingLevel = 6;
 const headingDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
-    lineDecorations: DecorationSet = Decoration.none;
 
     constructor(public view: EditorView) {
       this.recompute();
@@ -49,7 +48,7 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
     }
 
     update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet) {
+      if (update.docChanged || update.selectionSet || update.viewportChanged) {
         this.recompute(update);
       }
     }
