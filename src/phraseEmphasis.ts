@@ -37,8 +37,8 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       for (let { from, to } of this.view.visibleRanges) {
         this.getDecorationsFor(from, to, decorations);
       }
-      decorations.sort((deco1, deco2) => (deco1.from > deco2.from ? 1 : -1));
-      this.decorations = Decoration.set(decorations);
+
+      this.decorations = Decoration.set(decorations, true);
 
       // Iterate all decorations and remove those shouldn't be created.
       let prevFrom: Number, prevTo: Number;

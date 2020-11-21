@@ -15,13 +15,13 @@ export function heading(): Extension {
   return [headingDecorationPlugin, baseTheme];
 }
 
-const headingRE = /^#{1,6}\s{1}/g;
+const headingRE = /^#{1,6}\s{1}/;
 const MaxHeadingLevel = 6;
 
 const headingDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
-    headerDeco?: Decoration;
+    lineDecorations: DecorationSet = Decoration.none;
 
     constructor(public view: EditorView) {
       this.recompute();
@@ -29,26 +29,22 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
 
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
+      let lineDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
-        this.getDecorationsFor(from, to, decorations);
+        this.getDecorationsFor(from, to, decorations, lineDecorations);
       }
-      decorations.sort((deco1, deco2) => (deco1.from > deco2.from ? 1 : -1));
-      this.decorations = Decoration.set(decorations);
+
+      this.decorations = Decoration.set(decorations, true);
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (
-            update &&
-            isCursorInside(update, from, to) &&
-            // Only check cursor is in the header widget, ignore line decoration.
-            this.headerDeco &&
-            value.eq(this.headerDeco)
-          ) {
+          if (update && isCursorInside(update, from, to)) {
             return false;
           }
 
           return true;
         },
+        add: lineDecorations,
       });
     }
 
@@ -58,26 +54,33 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+      lineDecorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
 
-      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
         if (!cursor.lineBreak) {
-          while ((m = headingRE.exec(cursor.value))) {
+          let m = cursor.value.match(headingRE);
+          if (m) {
             let level = (m[0].match(/#/g) || []).length;
             level = level > MaxHeadingLevel ? MaxHeadingLevel : level;
 
-            this.headerDeco = Decoration.replace({
+            let deco = Decoration.replace({
               widget: new HeaderIndicatorWidget(level),
               inclusive: true,
             });
-            decorations.push(this.headerDeco.range(pos + m.index, pos + m.index + m[0].length));
+            decorations.push(deco.range(pos, pos + m[0].length));
+
             const heading = Decoration.line({
               attributes: {
                 class: themeClass(`h${level}`),
               },
             });
-            decorations.push(heading.range(pos));
+            lineDecorations.push(heading.range(pos));
           }
         }
         pos += cursor.value.length;
