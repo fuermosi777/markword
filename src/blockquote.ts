@@ -43,7 +43,7 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
     }
 
     update(update: ViewUpdate) {
-      if (update.changes.length || update.viewportChanged) {
+      if (update.docChanged || update.selectionSet) {
         this.recompute(update);
       }
     }

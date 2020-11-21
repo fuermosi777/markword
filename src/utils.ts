@@ -6,7 +6,7 @@ import { ViewUpdate, WidgetType } from '@codemirror/next/view';
  * @param update
  * @param from
  * @param to
- * @param inclusive Whether the left and right edges are included.
+ * @param inclusive Whether the left and right edges are included. Default is true.
  */
 function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive = true): boolean {
   let latestTr = update.transactions[update.transactions.length - 1];
