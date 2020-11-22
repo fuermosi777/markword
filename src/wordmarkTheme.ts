@@ -10,7 +10,8 @@ const baseTheme = EditorView.baseTheme({
   $line: { ...regularFontFamily },
   $$focused: { outline: 'none' },
   $$wrap: {
-    width: '800px',
+    maxWidth: '800px',
+    padding: '0 15px',
     margin: '0 auto',
   },
 });
