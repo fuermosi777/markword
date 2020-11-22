@@ -8,10 +8,15 @@ export function wordmarkTheme(): Extension {
 
 const baseTheme = EditorView.baseTheme({
   $line: { ...regularFontFamily },
+  '$line:first-child': {
+    paddingTop: '60px',
+  },
   $$focused: { outline: 'none' },
   $$wrap: {
-    maxWidth: '800px',
-    padding: '0 15px',
     margin: '0 auto',
+    height: '100%',
+  },
+  $content: {
+    padding: '0 15%',
   },
 });

@@ -141,7 +141,4 @@ const baseTheme = EditorView.baseTheme({
     transition: 'all 0.2s',
     position: 'relative',
   },
-  '$checkbox:hover': {
-    transform: 'scale(1.1)',
-  },
 });

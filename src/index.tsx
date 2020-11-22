@@ -13,55 +13,6 @@ import { codeblock } from './codeblock';
 import { hr } from './hr';
 
 let startState = EditorState.create({
-  doc: `# Introduction
-
-## Styles
-
-Introducing markword -- a *italic* and **bold** styles. Insert some inline \`code\` is fine, such as \`var markword = function() { return true; }\`
-
-and support the [external link](http://google.com "title") and <http://autolink.cc> and lists:
-
-- Panda
-- Banana
-- Cat and *dog*
-
-And to-do list!
-
-- [ ] Buy bread
-- [ ] Do yoga
-- [ ] Repair the floor
-
-![image alt text](https://picsum.photos/200 "xtt") 
-
-* * *
-
-## Blockquotes
-
-> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
-> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
-> Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
-> 
-> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
-> id sem consectetuer libero luctus adipiscing.
-
-*lazy mode*
-
-> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
-consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
-Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
-
-> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
-id sem consectetuer libero luctus adipiscing.
-
----
-
-\`\`\`javascript
-var makeFunc = function() {
-  return 3;
-}
-\`\`\`
-
-`,
   extensions: [
     wordmarkTheme(),
     listTask(),
