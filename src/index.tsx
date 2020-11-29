@@ -11,24 +11,35 @@ import { image } from './image';
 import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
 import { hr } from './hr';
+import { webkit } from './webkit';
+
+let extensions = [
+  wordmarkTheme(),
+  listTask(),
+  phraseEmphasis(),
+  heading(),
+  link(),
+  image(),
+  blockquote(),
+  codeblock(),
+  hr(),
+  keymap(defaultKeymap),
+  webkit(),
+  EditorView.lineWrapping,
+];
 
 let startState = EditorState.create({
-  extensions: [
-    wordmarkTheme(),
-    listTask(),
-    phraseEmphasis(),
-    heading(),
-    link(),
-    image(),
-    blockquote(),
-    codeblock(),
-    hr(),
-    keymap(defaultKeymap),
-    EditorView.lineWrapping,
-  ],
+  extensions,
 });
 
 let view = new EditorView({
   state: startState,
   parent: document.getElementById('container')!,
 });
+
+function ClientUpdateDoc(doc: string) {
+  view.setState(EditorState.create({ doc, extensions }));
+}
+
+const _global = (window /* browser */ || global) /* node */ as any;
+_global.ClientUpdateDoc = ClientUpdateDoc;
