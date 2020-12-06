@@ -1,2 +1,3 @@
 - [ ] Codeblock hightlight
 - [ ] add ref link and quick link "[Google][]"
+- [ ] list level, auto complete bullets

@@ -92,38 +92,9 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
   },
 );
 
-class CodeblockStartWidget extends WidgetType {
-  constructor(readonly language: string) {
-    super();
-  }
-
-  eq(other: CodeblockStartWidget) {
-    return false;
-  }
-
-  toDOM() {
-    let span = document.createElement('span');
-    span.textContent = this.language || '';
-    span.className = themeClass(`codeblock-start`);
-    return span;
-  }
-
-  ignoreEvent(): boolean {
-    return false;
-  }
-}
-
 const baseTheme = EditorView.baseTheme({
   $codeblock: {
-    backgroundColor: '#F9F9F9',
     paddingLeft: '10px',
     ...codeFontFamily,
-  },
-  '$codeblock-start': {
-    backgroundColor: '#F3F3F3',
-    borderRadius: '2px',
-    border: '1px solid #D0D0D0',
-    padding: '4px',
-    fontSize: '10px',
   },
 });
