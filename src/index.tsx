@@ -1,4 +1,4 @@
-import { EditorState } from '@codemirror/next/state';
+import { EditorState, Extension, tagExtension } from '@codemirror/next/state';
 import { EditorView, keymap } from '@codemirror/next/view';
 import { defaultKeymap } from '@codemirror/next/commands';
 import { phraseEmphasis } from './phraseEmphasis';
@@ -12,8 +12,9 @@ import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
 import { hr } from './hr';
 import { webkit } from './webkit';
+import { defaultColor, darkColor } from './colorTheme';
 
-let extensions = [
+const extensions = [
   wordmarkTheme(),
   listTask(),
   phraseEmphasis(),
@@ -28,9 +29,21 @@ let extensions = [
   EditorView.lineWrapping,
 ];
 
+type ThemeColor = 'Default' | 'Dark';
+
+const urlParams = new URLSearchParams(window.location.search);
+const themeFromUrl = urlParams.get('theme') as ThemeColor;
+let color: Extension = themeFromUrl === 'Dark' ? darkColor() : defaultColor();
+let colorThemeExtTag = Symbol();
+
+// State when first start.
 let startState = EditorState.create({
-  extensions,
+  extensions: makeExtensions(),
 });
+
+function makeExtensions() {
+  return [...extensions, tagExtension(colorThemeExtTag, color)];
+}
 
 let view = new EditorView({
   state: startState,
@@ -38,8 +51,22 @@ let view = new EditorView({
 });
 
 function ClientUpdateDoc(doc: string) {
-  view.setState(EditorState.create({ doc, extensions }));
+  view.setState(EditorState.create({ doc, extensions: makeExtensions() }));
+}
+
+function ClientUpdateTheme(name: ThemeColor) {
+  if (name === 'Default') {
+    color = defaultColor();
+  } else if (name === 'Dark') {
+    color = darkColor();
+  }
+  if (view) {
+    view.dispatch({
+      reconfigure: { [colorThemeExtTag]: color },
+    });
+  }
 }
 
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientUpdateDoc = ClientUpdateDoc;
+_global.ClientUpdateTheme = ClientUpdateTheme;

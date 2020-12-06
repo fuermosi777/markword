@@ -11,7 +11,10 @@ const webkitPlugin = ViewPlugin.fromClass(
 
     update(update: ViewUpdate) {
       if (update.docChanged) {
-        (<any>window).webkit.messageHandlers.jsHandler.postMessage('hi from js!');
+        let webkit = (<any>window).webkit;
+        if (webkit) {
+          webkit.messageHandlers.DocChanged.postMessage(update.state.toJSON().doc);
+        }
       }
     }
   },
