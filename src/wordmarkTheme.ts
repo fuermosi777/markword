@@ -20,6 +20,9 @@ const baseTheme = EditorView.theme(
     $content: {
       padding: '0 15%',
     },
+    $image: {
+      maxWidth: '100%',
+    },
   },
   { dark: true },
 );

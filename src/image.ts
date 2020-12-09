@@ -4,6 +4,7 @@ import {
   DecorationSet,
   EditorView,
   Range,
+  themeClass,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -102,6 +103,7 @@ class ImageWidget extends WidgetType {
 
   toDOM() {
     let image = document.createElement('img');
+    image.className = themeClass('image');
     if (this.spec.url) {
       image.src = this.spec.url;
     }

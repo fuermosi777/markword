@@ -7,9 +7,8 @@ import {
   themeClass,
   ViewPlugin,
   ViewUpdate,
-  WidgetType,
 } from '@codemirror/next/view';
-import { EmptyWidget, isCursorInside } from './utils';
+import { isCursorInside } from './utils';
 import { codeFontFamily } from './theme';
 
 export function codeblock(): Extension {
@@ -28,19 +27,14 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
 
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
+      let lineDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
-        this.getDecorationsFor(from, to, decorations);
+        this.getDecorationsFor(from, to, decorations, lineDecorations);
       }
       this.decorations = Decoration.set(decorations, true);
 
       this.decorations = this.decorations.update({
-        filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to)) {
-            return false;
-          }
-
-          return true;
-        },
+        add: lineDecorations,
       });
     }
 
@@ -50,7 +44,21 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    addLineDecoration(className: string, lineDecorations: Range<Decoration>[], pos: number) {
+      const heading = Decoration.line({
+        attributes: {
+          class: className,
+        },
+      });
+      lineDecorations.push(heading.range(pos));
+    }
+
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+      lineDecorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
       let insideCodeblock = false;
 
@@ -61,26 +69,23 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
           if (m && !insideCodeblock) {
             // Start the codeblock.
             insideCodeblock = true;
-            const deco = Decoration.replace({
-              widget: new EmptyWidget(),
+            const deco = Decoration.mark({
+              class: themeClass('codeblock-indicator'),
               inclusive: true,
             });
             decorations.push(deco.range(pos, pos + cursor.value.length));
+            this.addLineDecoration(themeClass('codeblock-start'), lineDecorations, pos);
           } else if (m && insideCodeblock) {
             insideCodeblock = false;
-            const deco = Decoration.replace({
-              widget: new EmptyWidget(), // TODO: add a new widget.
+            const deco = Decoration.mark({
+              class: themeClass('codeblock-indicator'),
               inclusive: true,
             });
             decorations.push(deco.range(pos, pos + cursor.value.length));
+            this.addLineDecoration(themeClass('codeblock-end'), lineDecorations, pos);
           }
           if (m || insideCodeblock) {
-            const heading = Decoration.line({
-              attributes: {
-                class: themeClass(`codeblock`),
-              },
-            });
-            decorations.push(heading.range(pos));
+            this.addLineDecoration(themeClass('codeblock'), lineDecorations, pos);
           }
         }
         pos += cursor.value.length;
@@ -96,5 +101,16 @@ const baseTheme = EditorView.baseTheme({
   $codeblock: {
     paddingLeft: '10px',
     ...codeFontFamily,
+  },
+  '$codeblock-start': {
+    borderTopLeftRadius: '6px',
+    borderTopRightRadius: '6px',
+  },
+  '$codeblock-end': {
+    borderBottomLeftRadius: '6px',
+    borderBottomRightRadius: '6px',
+  },
+  '$codeblock-indicator': {
+    color: '#CCC',
   },
 });
