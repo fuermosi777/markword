@@ -26,19 +26,21 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
+      let lineDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
-        this.getDecorationsFor(from, to, decorations);
+        this.getDecorationsFor(from, to, decorations, lineDecorations);
       }
       this.decorations = Decoration.set(decorations, true);
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to)) {
+          if (update && isCursorInside(update, from, to, /* inclusive=*/ false)) {
             return false;
           }
 
           return true;
         },
+        add: lineDecorations,
       });
     }
 
@@ -48,7 +50,12 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+      lineDecorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
       let insideBlockquote = false;
       let isLastLineBreak = false;
@@ -68,14 +75,14 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
                 class: themeClass(`blockquote`),
               },
             });
-            decorations.push(bq.range(pos));
+            lineDecorations.push(bq.range(pos));
           } else if (insideBlockquote) {
             const bq = Decoration.line({
               attributes: {
                 class: themeClass(`blockquote`),
               },
             });
-            decorations.push(bq.range(pos));
+            lineDecorations.push(bq.range(pos));
           }
           isLastLineBreak = false;
         } else {

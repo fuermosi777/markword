@@ -10,7 +10,7 @@ const baseTheme = EditorView.theme(
   {
     $line: { ...regularFontFamily },
     '$line:first-child': {
-      paddingTop: '60px',
+      marginTop: '60px',
     },
     $$focused: { outline: 'none' },
     $$wrap: {
