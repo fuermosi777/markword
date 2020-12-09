@@ -2,7 +2,10 @@ const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.tsx',
+  entry: {
+    main: './src/index.tsx',
+    debug: './src/debug.tsx',
+  },
   module: {
     rules: [
       {
@@ -45,7 +48,7 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
@@ -59,6 +62,9 @@ module.exports = {
         //   Copy index.html to /dist dir.
         {
           from: path.resolve(__dirname, 'index.html'),
+        },
+        {
+          from: path.resolve(__dirname, 'debug.html'),
         },
       ],
     }),
