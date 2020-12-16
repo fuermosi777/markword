@@ -9,6 +9,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/next/view';
+import { isCursorInside } from './utils';
 
 export function hr(): Extension {
   return [hrDecorationPlugin, baseTheme];
@@ -32,16 +33,15 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
 
       this.decorations = Decoration.set(decorations, true);
 
-      // Not used due to lack of widget.
-      // this.decorations = this.decorations.update({
-      //   filter: (from, to, value: Decoration) => {
-      //     if (update && isCursorInside(update, from, to, false)) {
-      //       return false;
-      //     }
+      this.decorations = this.decorations.update({
+        filter: (from, to, value: Decoration) => {
+          if (update && isCursorInside(update, from, to, false)) {
+            return false;
+          }
 
-      //     return true;
-      //   },
-      // });
+          return true;
+        },
+      });
     }
 
     update(update: ViewUpdate) {
@@ -57,8 +57,8 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
         if (!cursor.lineBreak) {
           let m = cursor.value.match(hrRE);
           if (m) {
-            const hrDeco = Decoration.mark({
-              class: themeClass('hr'),
+            const hrDeco = Decoration.replace({
+              widget: new HrIndicatorWidget(m[0]),
               inclusive: false,
             });
             decorations.push(hrDeco.range(pos, pos + m[0].length));
@@ -73,29 +73,33 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
   },
 );
 
-// Not used due to https://github.com/codemirror/codemirror.next/issues/340
-// class HrIndicatorWidget extends WidgetType {
-//   constructor() {
-//     super();
-//   }
+class HrIndicatorWidget extends WidgetType {
+  constructor(readonly rawText: string) {
+    super();
+  }
 
-//   eq(other: HrIndicatorWidget) {
-//     return false;
-//   }
+  eq(other: HrIndicatorWidget) {
+    return this.rawText === other.rawText;
+  }
 
-//   toDOM() {
-//     let span = document.createElement('span');
-//     span.className = themeClass('hr');
-//     return span;
-//   }
+  toDOM() {
+    let span = document.createElement('span');
+    span.className = themeClass('hr');
+    return span;
+  }
 
-//   ignoreEvent(): boolean {
-//     return false;
-//   }
-// }
+  ignoreEvent(): boolean {
+    return false;
+  }
+}
 
 const baseTheme = EditorView.baseTheme({
   $hr: {
-    color: '#ccc',
+    width: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    height: '1px',
+    backgroundColor: '#ccc',
+    transform: 'translateY(10px)',
   },
 });

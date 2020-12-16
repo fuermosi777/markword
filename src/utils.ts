@@ -54,7 +54,7 @@ class EmptyWidget extends WidgetType {
   }
 
   eq(other: EmptyWidget) {
-    return false;
+    return true;
   }
 
   toDOM() {

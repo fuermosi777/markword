@@ -77,7 +77,7 @@ class BulletWidget extends WidgetType {
   }
 
   eq(other: BulletWidget) {
-    return false;
+    return true;
   }
 
   toDOM() {
@@ -99,7 +99,7 @@ class CheckWidget extends WidgetType {
   }
 
   eq(other: CheckWidget) {
-    return false;
+    return this.checked === other.checked;
   }
 
   toDOM() {
