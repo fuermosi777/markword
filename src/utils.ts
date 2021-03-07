@@ -12,18 +12,10 @@ function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive 
   let latestTr = update.transactions[update.transactions.length - 1];
 
   if (latestTr && latestTr.selection) {
-    if (
-      inclusive &&
-      latestTr.selection.primary.head >= from &&
-      latestTr.selection.primary.head <= to
-    ) {
+    if (inclusive && latestTr.selection.main.head >= from && latestTr.selection.main.head <= to) {
       return true;
     }
-    if (
-      !inclusive &&
-      latestTr.selection.primary.head > from &&
-      latestTr.selection.primary.head < to
-    ) {
+    if (!inclusive && latestTr.selection.main.head > from && latestTr.selection.main.head < to) {
       return true;
     }
   }
@@ -38,7 +30,7 @@ function eachLineMatchRe(
   re: RegExp,
   func: (match: any, pos: number) => void,
 ) {
-  for (let pos = from, iter = doc.iterLines(from), m; !iter.next().done; ) {
+  for (let pos = from, iter = doc.iterRange(from), m; !iter.next().done; ) {
     if (!iter.lineBreak) {
       while ((m = re.exec(iter.value))) {
         func(m, pos);

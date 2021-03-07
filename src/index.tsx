@@ -1,6 +1,6 @@
 import { EditorState, Extension, tagExtension } from '@codemirror/next/state';
 import { EditorView, keymap } from '@codemirror/next/view';
-import { defaultKeymap } from '@codemirror/next/commands';
+import { standardKeymap } from '@codemirror/next/commands';
 import { phraseEmphasis } from './phraseEmphasis';
 import './styles.less';
 import { heading } from './heading';
@@ -24,7 +24,7 @@ const extensions = [
   blockquote(),
   codeblock(),
   hr(),
-  keymap(defaultKeymap),
+  keymap.of(standardKeymap),
   webkit(),
   EditorView.lineWrapping,
 ];

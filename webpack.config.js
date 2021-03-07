@@ -4,7 +4,6 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: {
     main: './src/index.tsx',
-    debug: './src/debug.tsx',
   },
   module: {
     rules: [
@@ -62,9 +61,6 @@ module.exports = {
         //   Copy index.html to /dist dir.
         {
           from: path.resolve(__dirname, 'index.html'),
-        },
-        {
-          from: path.resolve(__dirname, 'debug.html'),
         },
       ],
     }),

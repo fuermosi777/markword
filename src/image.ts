@@ -10,7 +10,6 @@ import {
   WidgetType,
 } from '@codemirror/next/view';
 import { isCursorInside } from './utils';
-import * as assert from 'assert';
 
 // TODO: reference style
 // ![Alt text][id]
@@ -90,7 +89,6 @@ interface ImageWidgetSpec {
 class ImageWidget extends WidgetType {
   constructor(readonly spec: ImageWidgetSpec) {
     super();
-    assert.ok(spec.url || spec.ref);
   }
 
   eq(other: ImageWidget) {
