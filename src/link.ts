@@ -1,4 +1,4 @@
-import { Extension } from '@codemirror/next/state';
+import { Extension } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
@@ -7,7 +7,7 @@ import {
   ViewPlugin,
   ViewUpdate,
   WidgetType,
-} from '@codemirror/next/view';
+} from '@codemirror/view';
 import { isCursorInside } from './utils';
 
 const linkRE = /\[([^\[\]]+)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?\)/g;

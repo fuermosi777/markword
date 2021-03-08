@@ -1,5 +1,5 @@
-import { Extension } from '@codemirror/next/state';
-import { EditorView, ViewPlugin, ViewUpdate } from '@codemirror/next/view';
+import { Extension } from '@codemirror/state';
+import { EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view';
 
 export function webkit(): Extension {
   return [webkitPlugin];

@@ -1,5 +1,5 @@
-import { Text } from '@codemirror/next/text';
-import { ViewUpdate, WidgetType } from '@codemirror/next/view';
+import { Text } from '@codemirror/text';
+import { ViewUpdate, WidgetType } from '@codemirror/view';
 
 /**
  * Check if cursor is inside the widget.

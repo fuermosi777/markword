@@ -1,4 +1,4 @@
-import { Extension } from '@codemirror/next/state';
+import { Extension } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
@@ -8,7 +8,7 @@ import {
   ViewPlugin,
   ViewUpdate,
   WidgetType,
-} from '@codemirror/next/view';
+} from '@codemirror/view';
 import { eachLineMatchRe, isCursorInside } from './utils';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.

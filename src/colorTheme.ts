@@ -1,5 +1,5 @@
-import { Extension } from '@codemirror/next/state';
-import { EditorView } from '@codemirror/next/view';
+import { Extension } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 
 export function defaultColor(): Extension {
   return [defaultTheme];

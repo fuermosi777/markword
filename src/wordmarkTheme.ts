@@ -1,5 +1,5 @@
-import { Extension } from '@codemirror/next/state';
-import { EditorView } from '@codemirror/next/view';
+import { Extension } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 import { regularFontFamily } from './theme';
 
 export function wordmarkTheme(): Extension {
@@ -9,20 +9,20 @@ export function wordmarkTheme(): Extension {
 const baseTheme = EditorView.theme(
   {
     $line: { ...regularFontFamily },
-    '$line:first-child': {
-      marginTop: '60px',
-    },
+    // '$line:first-child': {
+    //   marginTop: '60px',
+    // },
     $$focused: { outline: 'none' },
-    $$wrap: {
-      margin: '0 auto',
-      height: '100%',
-    },
-    $content: {
-      padding: '0 15%',
-    },
-    $image: {
-      maxWidth: '100%',
-    },
+    // $$wrap: {
+    //   margin: '0 auto',
+    //   height: '100%',
+    // },
+    // $content: {
+    //   padding: '0 15%',
+    // },
+    // $image: {
+    //   maxWidth: '100%',
+    // },
   },
   { dark: true },
 );

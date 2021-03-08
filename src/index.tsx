@@ -1,6 +1,9 @@
-import { EditorState, Extension, tagExtension } from '@codemirror/next/state';
-import { EditorView, keymap } from '@codemirror/next/view';
-import { standardKeymap } from '@codemirror/next/commands';
+import { EditorState, Extension, Compartment } from '@codemirror/state';
+import { EditorView, keymap } from '@codemirror/view';
+import { standardKeymap } from '@codemirror/commands';
+import { markdown } from '@codemirror/lang-markdown';
+import { javascriptLanguage } from '@codemirror/lang-javascript';
+import { defaultHighlightStyle, classHighlightStyle } from '@codemirror/highlight';
 import { phraseEmphasis } from './phraseEmphasis';
 import './styles.less';
 import { heading } from './heading';
@@ -16,17 +19,25 @@ import { defaultColor, darkColor } from './colorTheme';
 
 const extensions = [
   wordmarkTheme(),
-  listTask(),
-  phraseEmphasis(),
-  heading(),
-  link(),
-  image(),
-  blockquote(),
-  codeblock(),
-  hr(),
+  markdown({
+    defaultCodeLanguage: javascriptLanguage,
+  }),
+  defaultHighlightStyle,
+  classHighlightStyle,
+
   keymap.of(standardKeymap),
-  webkit(),
   EditorView.lineWrapping,
+
+  // listTask(),
+  // phraseEmphasis(),
+  // heading(),
+  // link(),
+  // image(),
+  // blockquote(),
+  // codeblock(),
+  // hr(),
+
+  webkit(),
 ];
 
 type ThemeColor = 'Default' | 'Dark';
@@ -34,7 +45,8 @@ type ThemeColor = 'Default' | 'Dark';
 const urlParams = new URLSearchParams(window.location.search);
 const themeFromUrl = urlParams.get('theme') as ThemeColor;
 let color: Extension = themeFromUrl === 'Dark' ? darkColor() : defaultColor();
-let colorThemeExtTag = Symbol();
+let colorThemeComp = new Compartment();
+const colorThemeExtension = colorThemeComp.of(color);
 
 // State when first start.
 let startState = EditorState.create({
@@ -42,7 +54,7 @@ let startState = EditorState.create({
 });
 
 function makeExtensions() {
-  return [...extensions, tagExtension(colorThemeExtTag, color)];
+  return [...extensions, colorThemeExtension];
 }
 
 let view = new EditorView({
@@ -61,9 +73,7 @@ function ClientUpdateTheme(name: ThemeColor) {
     color = darkColor();
   }
   if (view) {
-    view.dispatch({
-      reconfigure: { [colorThemeExtTag]: color },
-    });
+    view.state.update({ effects: colorThemeComp.reconfigure(color) });
   }
 }
 
