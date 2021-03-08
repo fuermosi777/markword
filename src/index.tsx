@@ -45,6 +45,8 @@ type ThemeColor = 'Default' | 'Dark';
 const urlParams = new URLSearchParams(window.location.search);
 const themeFromUrl = urlParams.get('theme') as ThemeColor;
 let color: Extension = themeFromUrl === 'Dark' ? darkColor() : defaultColor();
+
+//https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983
 let colorThemeComp = new Compartment();
 const colorThemeExtension = colorThemeComp.of(color);
 
