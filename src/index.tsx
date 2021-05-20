@@ -28,14 +28,14 @@ const extensions = [
   keymap.of(standardKeymap),
   EditorView.lineWrapping,
 
-  // listTask(),
-  // phraseEmphasis(),
-  // heading(),
-  // link(),
-  // image(),
-  // blockquote(),
-  // codeblock(),
-  // hr(),
+  listTask(),
+  phraseEmphasis(),
+  heading(),
+  link(),
+  image(),
+  blockquote(),
+  codeblock(),
+  hr(),
 
   webkit(),
 ];
@@ -44,6 +44,7 @@ type ThemeColor = 'Default' | 'Dark';
 
 const urlParams = new URLSearchParams(window.location.search);
 const themeFromUrl = urlParams.get('theme') as ThemeColor;
+console.log(themeFromUrl);
 let color: Extension = themeFromUrl === 'Dark' ? darkColor() : defaultColor();
 
 //https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983

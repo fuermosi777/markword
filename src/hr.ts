@@ -4,7 +4,6 @@ import {
   DecorationSet,
   EditorView,
   Range,
-  themeClass,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -84,7 +83,7 @@ class HrIndicatorWidget extends WidgetType {
 
   toDOM() {
     let span = document.createElement('span');
-    span.className = themeClass('hr');
+    span.className = 'cm-hr';
     return span;
   }
 
@@ -94,7 +93,7 @@ class HrIndicatorWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  $hr: {
+  '.cm-hr': {
     width: '100%',
     display: 'flex',
     alignItems: 'center',

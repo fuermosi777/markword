@@ -6,23 +6,10 @@ export function wordmarkTheme(): Extension {
   return [baseTheme];
 }
 
-const baseTheme = EditorView.theme(
-  {
-    $line: { ...regularFontFamily },
-    // '$line:first-child': {
-    //   marginTop: '60px',
-    // },
-    $$focused: { outline: 'none' },
-    // $$wrap: {
-    //   margin: '0 auto',
-    //   height: '100%',
-    // },
-    // $content: {
-    //   padding: '0 15%',
-    // },
-    // $image: {
-    //   maxWidth: '100%',
-    // },
+const baseTheme = EditorView.theme({
+  '&.cm-editor': {
+    height: '100%',
   },
-  { dark: true },
-);
+  '.cm-line': { ...regularFontFamily },
+  '&.cm-focused': { outline: 'none' },
+});

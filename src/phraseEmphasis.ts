@@ -4,7 +4,6 @@ import {
   DecorationSet,
   EditorView,
   Range,
-  themeClass,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -132,7 +131,7 @@ class BoldWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.classList.add(themeClass('bold'));
+    span.classList.add('cm-bold');
     return span;
   }
 
@@ -151,7 +150,7 @@ class ItalicWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.classList.add(themeClass('italic'));
+    span.classList.add('cm-italic');
     return span;
   }
 
@@ -170,7 +169,7 @@ class InlineCodeWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.visibleValue;
-    span.classList.add(themeClass('inline-code'));
+    span.classList.add('cm-inline-code');
     return span;
   }
 
@@ -180,13 +179,13 @@ class InlineCodeWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  $bold: {
+  '.cm-bold': {
     fontWeight: 'bold',
   },
-  $italic: {
+  '.cm-italic': {
     fontStyle: 'italic',
   },
-  '$inline-code': {
+  '.cm-inline-code': {
     ...codeFontFamily,
   },
 });

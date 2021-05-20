@@ -4,7 +4,6 @@ import {
   DecorationSet,
   EditorView,
   Range,
-  themeClass,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -83,7 +82,7 @@ class BulletWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = this.order ? this.order : '•';
-    span.className = themeClass(`list-bullet`);
+    span.className = 'cm-list-bullet';
     span.style.marginRight = '5px';
     return span;
   }
@@ -105,7 +104,7 @@ class CheckWidget extends WidgetType {
   toDOM() {
     const cb = document.createElement('input');
     cb.type = 'checkbox';
-    cb.className = themeClass('checkbox');
+    cb.className = 'cm-checkbox';
     if (this.checked) {
       cb.checked = true;
     }
@@ -132,8 +131,8 @@ class CheckWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  // '$list-bullet': { fontSize: '24px' },
-  $checkbox: {
+  // '.cm-list-bullet': { fontSize: '24px' },
+  '.cm-checkbox': {
     border: '1px solid #C1C3C6',
     borderRadius: '4px',
     display: 'inline-block',

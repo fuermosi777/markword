@@ -4,7 +4,6 @@ import {
   DecorationSet,
   EditorView,
   Range,
-  themeClass,
   ViewPlugin,
   ViewUpdate,
 } from '@codemirror/view';
@@ -72,14 +71,14 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
             decorations.push(deco.range(pos, pos + m[0].length));
             const bq = Decoration.line({
               attributes: {
-                class: themeClass(`blockquote`),
+                class: 'cm-blockquote',
               },
             });
             lineDecorations.push(bq.range(pos));
           } else if (insideBlockquote) {
             const bq = Decoration.line({
               attributes: {
-                class: themeClass(`blockquote`),
+                class: 'cm-blockquote',
               },
             });
             lineDecorations.push(bq.range(pos));
@@ -101,7 +100,7 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 );
 
 const baseTheme = EditorView.baseTheme({
-  $blockquote: {
+  '.cm-blockquote': {
     backgroundColor: '#F9F9F9',
     paddingLeft: '10px',
     borderLeft: '4px solid gray',

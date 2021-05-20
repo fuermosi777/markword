@@ -11,16 +11,16 @@ export function darkColor(): Extension {
 
 const defaultTheme = EditorView.theme(
   {
-    $$wrap: {
+    '&.cm-wrap': {
       backgroundColor: 'white',
     },
-    $content: { caretColor: '#188FE9' },
-    $line: { color: '#1E1E1E' },
-    '$line a': { color: '#188FE9' },
-    $blockquote: {
+    '.cm-content': { caretColor: '#188FE9' },
+    '.cm-line': { color: '#1E1E1E' },
+    '.cm-line a': { color: '#188FE9' },
+    '.cm-blockquote': {
       backgroundColor: '#F9F9F9',
     },
-    $codeblock: {
+    '.cm-codeblock': {
       backgroundColor: '#F9F9F9',
     },
   },
@@ -29,16 +29,16 @@ const defaultTheme = EditorView.theme(
 
 const darkTheme = EditorView.theme(
   {
-    $$wrap: {
+    '&.cm-wrap': {
       backgroundColor: '#1E1E1E',
     },
-    $content: { caretColor: '#188FE9' },
-    $line: { color: '#E3E3E3' },
-    '$line a': { color: '#188FE9' },
-    $blockquote: {
+    '.cm-content': { caretColor: '#188FE9' },
+    '.cm-line': { color: '#E3E3E3' },
+    '.cm-line a': { color: '#188FE9' },
+    '.cm-blockquote': {
       backgroundColor: '#464646',
     },
-    $codeblock: {
+    '.cm-codeblock': {
       backgroundColor: '#464646',
     },
   },

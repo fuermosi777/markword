@@ -4,7 +4,6 @@ import {
   DecorationSet,
   EditorView,
   Range,
-  themeClass,
   ViewPlugin,
   ViewUpdate,
 } from '@codemirror/view';
@@ -70,22 +69,22 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
             // Start the codeblock.
             insideCodeblock = true;
             const deco = Decoration.mark({
-              class: themeClass('codeblock-indicator'),
+              class: 'cm-codeblock-indicator',
               inclusive: true,
             });
             decorations.push(deco.range(pos, pos + cursor.value.length));
-            this.addLineDecoration(themeClass('codeblock-start'), lineDecorations, pos);
+            this.addLineDecoration('cm-codeblock-start', lineDecorations, pos);
           } else if (m && insideCodeblock) {
             insideCodeblock = false;
             const deco = Decoration.mark({
-              class: themeClass('codeblock-indicator'),
+              class: 'cm-codeblock-indicator',
               inclusive: true,
             });
             decorations.push(deco.range(pos, pos + cursor.value.length));
-            this.addLineDecoration(themeClass('codeblock-end'), lineDecorations, pos);
+            this.addLineDecoration('cm-codeblock-end', lineDecorations, pos);
           }
           if (m || insideCodeblock) {
-            this.addLineDecoration(themeClass('codeblock'), lineDecorations, pos);
+            this.addLineDecoration('cm-codeblock', lineDecorations, pos);
           }
         }
         pos += cursor.value.length;
@@ -98,19 +97,19 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
 );
 
 const baseTheme = EditorView.baseTheme({
-  $codeblock: {
+  '.cm-codeblock': {
     paddingLeft: '10px',
     ...codeFontFamily,
   },
-  '$codeblock-start': {
+  '.cm-codeblock-start': {
     borderTopLeftRadius: '6px',
     borderTopRightRadius: '6px',
   },
-  '$codeblock-end': {
+  '.cm-codeblock-end': {
     borderBottomLeftRadius: '6px',
     borderBottomRightRadius: '6px',
   },
-  '$codeblock-indicator': {
+  '.cm-codeblock-indicator': {
     color: '#CCC',
   },
 });

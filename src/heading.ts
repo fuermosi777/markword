@@ -4,7 +4,6 @@ import {
   DecorationSet,
   EditorView,
   Range,
-  themeClass,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -76,7 +75,7 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
 
             const heading = Decoration.line({
               attributes: {
-                class: themeClass(`h${level}`),
+                class: `cm-h${level}`,
               },
             });
             lineDecorations.push(heading.range(pos));
@@ -103,7 +102,7 @@ class HeaderIndicatorWidget extends WidgetType {
   toDOM() {
     let span = document.createElement('span');
     span.textContent = 'H' + this.level;
-    span.className = themeClass(`h${this.level}-indicator`);
+    span.className = `cm-h${this.level}-indicator`;
     span.style.marginRight = '5px';
     return span;
   }
@@ -114,16 +113,16 @@ class HeaderIndicatorWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  $h1: { fontSize: '24px' },
-  '$h1-indicator': { fontSize: '12px', color: '#6E6E6E' },
-  $h2: { fontSize: '20px' },
-  '$h2-indicator': { fontSize: '12px', color: '#6E6E6E' },
-  $h3: { fontSize: '18px' },
-  '$h3-indicator': { fontSize: '12px', color: '#6E6E6E' },
-  $h4: { fontSize: '16px' },
-  '$h4-indicator': { fontSize: '12px', color: '#6E6E6E' },
-  $h5: { fontSize: '14px' },
-  '$h5-indicator': { fontSize: '12px', color: '#6E6E6E' },
-  $h6: { fontSize: '14px' },
-  '$h6-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cm-h1': { fontSize: '24px' },
+  '.cm-h1-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cm-h2': { fontSize: '20px' },
+  '.cm-h2-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cm-3': { fontSize: '18px' },
+  '.cm-3-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cm-4': { fontSize: '16px' },
+  '.cm-4-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cm-5': { fontSize: '14px' },
+  '.cm-5-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cm-6': { fontSize: '14px' },
+  '.cm-6-indicator': { fontSize: '12px', color: '#6E6E6E' },
 });
