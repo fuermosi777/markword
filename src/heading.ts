@@ -36,13 +36,6 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
       this.decorations = Decoration.set(decorations, true);
 
       this.decorations = this.decorations.update({
-        // filter: (from, to, _: Decoration) => {
-        //   if (update && isCursorInsideLine(update.state, from, to)) {
-        //     return false;
-        //   }
-
-        //   return true;
-        // },
         add: lineDecorations,
       });
     }
@@ -70,7 +63,7 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
             level = Math.min(level, MaxHeadingLevel);
 
             // If the cursor is inside the heading line, don't draw indicator widget.
-            let lineLength = m.input?.length || 0;
+            let lineLength = iter.value.length;
             if (!isCursorInsideLine(state, pos, pos + lineLength)) {
               let deco = Decoration.replace({
                 widget: new HeaderIndicatorWidget(level, m[0]),

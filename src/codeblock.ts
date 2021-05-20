@@ -6,15 +6,16 @@ import {
   Range,
   ViewPlugin,
   ViewUpdate,
+  WidgetType,
 } from '@codemirror/view';
-import { isCursorInside } from './utils';
 import { codeFontFamily } from './theme';
+import { isCursorInsideLine } from './utils';
 
 export function codeblock(): Extension {
   return [codeblockDecorationPlugin, baseTheme];
 }
 
-const codeblockRE = /^```([a-zA-Z]*)/;
+const codeblockRE = /^`{3}([a-zA-Z]*)/;
 
 const codeblockDecorationPlugin = ViewPlugin.fromClass(
   class {
@@ -27,8 +28,11 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
       let lineDecorations: Range<Decoration>[] = [];
+      // This is for determine whether the cursor is inside the current codeblock, won't be used for actual decoration.
+      let indicatorDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
-        this.getDecorationsFor(from, to, decorations, lineDecorations);
+        // Start from 0 because we want to make sure the ``` always starts from top to bottom to avoid a case when the ending indicator becomes the starting one.
+        this.getDecorationsFor(0, to, decorations, lineDecorations, indicatorDecorations);
       }
       this.decorations = Decoration.set(decorations, true);
 
@@ -57,37 +61,46 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
       to: number,
       decorations: Range<Decoration>[],
       lineDecorations: Range<Decoration>[],
+      indicatorDecorations: Range<Decoration>[],
     ) {
       let { doc } = this.view.state;
       let insideCodeblock = false;
 
-      // Need to run two rounds. First round is to identify the codeblock and add line class. The second round is to highlight identified code.
-      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
-        if (!cursor.lineBreak) {
-          let m = cursor.value.match(codeblockRE);
+      for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
+        if (!iter.lineBreak) {
+          let m = iter.value.match(codeblockRE);
           if (m && !insideCodeblock) {
             // Start the codeblock.
             insideCodeblock = true;
-            const deco = Decoration.mark({
-              class: 'cm-codeblock-indicator',
-              inclusive: true,
-            });
-            decorations.push(deco.range(pos, pos + cursor.value.length));
+            let lineLength = iter.value.length;
+            if (!isCursorInsideLine(this.view.state, pos, pos + lineLength)) {
+              let deco = Decoration.replace({
+                widget: new CodeBlockIndicatorWidget(m[1]),
+                inclusive: true,
+              });
+              decorations.push(deco.range(pos, pos + lineLength));
+            }
             this.addLineDecoration('cm-codeblock-start', lineDecorations, pos);
           } else if (m && insideCodeblock) {
             insideCodeblock = false;
-            const deco = Decoration.mark({
-              class: 'cm-codeblock-indicator',
-              inclusive: true,
-            });
-            decorations.push(deco.range(pos, pos + cursor.value.length));
+            let lineLength = iter.value.length;
+            if (!isCursorInsideLine(this.view.state, pos, pos + lineLength)) {
+              let deco = Decoration.replace({
+                widget: new CodeBlockIndicatorWidget(m[1]),
+                inclusive: true,
+              });
+              decorations.push(deco.range(pos, pos + lineLength));
+            }
             this.addLineDecoration('cm-codeblock-end', lineDecorations, pos);
           }
           if (m || insideCodeblock) {
             this.addLineDecoration('cm-codeblock', lineDecorations, pos);
           }
+        } else if (insideCodeblock) {
+          // For line breaks (empty lines), we also want to add line decoration.
+          this.addLineDecoration('cm-codeblock', lineDecorations, pos);
         }
-        pos += cursor.value.length;
+        pos += iter.value.length;
       }
     }
   },
@@ -95,6 +108,26 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
     decorations: (v) => v.decorations,
   },
 );
+
+class CodeBlockIndicatorWidget extends WidgetType {
+  constructor(readonly lang?: string) {
+    super();
+  }
+
+  eq(other: CodeBlockIndicatorWidget) {
+    return other.lang == this.lang;
+  }
+
+  toDOM() {
+    let span = document.createElement('span');
+    span.className = `cm-codeblock-indicator`;
+    return span;
+  }
+
+  ignoreEvent(): boolean {
+    return false;
+  }
+}
 
 const baseTheme = EditorView.baseTheme({
   '.cm-codeblock': {
