@@ -8,7 +8,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { isCursorInside } from './utils';
+import { isCursorInside, isCursorInsideLine } from './utils';
 
 export function heading(): Extension {
   return [headingDecorationPlugin, baseTheme];
@@ -17,6 +17,7 @@ export function heading(): Extension {
 const headingRE = /^#{1,6}\s{1}/;
 const MaxHeadingLevel = 6;
 
+// The plugin reads all lines and adds heading indicators widget (#) and line decorations.
 const headingDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
@@ -35,13 +36,13 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
       this.decorations = Decoration.set(decorations, true);
 
       this.decorations = this.decorations.update({
-        filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, /* inclusive= */ false)) {
-            return false;
-          }
+        // filter: (from, to, _: Decoration) => {
+        //   if (update && isCursorInsideLine(update.state, from, to)) {
+        //     return false;
+        //   }
 
-          return true;
-        },
+        //   return true;
+        // },
         add: lineDecorations,
       });
     }
@@ -58,20 +59,25 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
       decorations: Range<Decoration>[],
       lineDecorations: Range<Decoration>[],
     ) {
-      let { doc } = this.view.state;
+      let { state } = this.view;
+      let { doc } = state;
 
-      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
-        if (!cursor.lineBreak) {
-          let m = cursor.value.match(headingRE);
+      for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
+        if (!iter.lineBreak) {
+          let m = iter.value.match(headingRE);
           if (m) {
             let level = (m[0].match(/#/g) || []).length;
-            level = level > MaxHeadingLevel ? MaxHeadingLevel : level;
+            level = Math.min(level, MaxHeadingLevel);
 
-            let deco = Decoration.replace({
-              widget: new HeaderIndicatorWidget(level),
-              inclusive: true,
-            });
-            decorations.push(deco.range(pos, pos + m[0].length));
+            // If the cursor is inside the heading line, don't draw indicator widget.
+            let lineLength = m.input?.length || 0;
+            if (!isCursorInsideLine(state, pos, pos + lineLength)) {
+              let deco = Decoration.replace({
+                widget: new HeaderIndicatorWidget(level, m[0]),
+                inclusive: true,
+              });
+              decorations.push(deco.range(pos, pos + m[0].length));
+            }
 
             const heading = Decoration.line({
               attributes: {
@@ -81,7 +87,7 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
             lineDecorations.push(heading.range(pos));
           }
         }
-        pos += cursor.value.length;
+        pos += iter.value.length;
       }
     }
   },
@@ -91,19 +97,17 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
 );
 
 class HeaderIndicatorWidget extends WidgetType {
-  constructor(readonly level: number) {
+  constructor(readonly level: number, readonly rawValue: string) {
     super();
   }
 
   eq(other: HeaderIndicatorWidget) {
-    return other.level == this.level;
+    return other.rawValue == this.rawValue;
   }
 
   toDOM() {
     let span = document.createElement('span');
-    span.textContent = 'H' + this.level;
     span.className = `cm-h${this.level}-indicator`;
-    span.style.marginRight = '5px';
     return span;
   }
 
@@ -125,4 +129,5 @@ const baseTheme = EditorView.baseTheme({
   '.cm-5-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cm-6': { fontSize: '14px' },
   '.cm-6-indicator': { fontSize: '12px', color: '#6E6E6E' },
+  '.cmt-heading': { textDecoration: 'none' },
 });

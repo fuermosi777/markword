@@ -1,3 +1,4 @@
+import { EditorState } from '@codemirror/state';
 import { Text } from '@codemirror/text';
 import { ViewUpdate, WidgetType } from '@codemirror/view';
 
@@ -18,6 +19,18 @@ function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive 
     if (!inclusive && latestTr.selection.main.head > from && latestTr.selection.main.head < to) {
       return true;
     }
+  }
+  return false;
+}
+
+function isCursorInsideLine(state: EditorState, from: number, to: number): boolean {
+  let cursorStart = state.selection.main.from;
+  let cursorEnd = state.selection.main.to;
+  if (from <= cursorStart && cursorStart <= to) {
+    return true;
+  }
+  if (to <= cursorEnd && cursorEnd <= to) {
+    return true;
   }
   return false;
 }
@@ -59,4 +72,4 @@ class EmptyWidget extends WidgetType {
   }
 }
 
-export { isCursorInside, eachLineMatchRe, EmptyWidget };
+export { isCursorInside, isCursorInsideLine, eachLineMatchRe, EmptyWidget };

@@ -28,7 +28,7 @@ const extensions = [
   keymap.of(standardKeymap),
   EditorView.lineWrapping,
 
-  listTask(),
+  // listTask(),
   phraseEmphasis(),
   heading(),
   link(),
