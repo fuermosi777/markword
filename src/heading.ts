@@ -118,16 +118,10 @@ class HeaderIndicatorWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   '.cm-h1': { fontSize: '24px' },
-  '.cm-h1-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cm-h2': { fontSize: '20px' },
-  '.cm-h2-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cm-3': { fontSize: '18px' },
-  '.cm-3-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cm-4': { fontSize: '16px' },
-  '.cm-4-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cm-5': { fontSize: '14px' },
-  '.cm-5-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cm-6': { fontSize: '14px' },
-  '.cm-6-indicator': { fontSize: '12px', color: '#6E6E6E' },
   '.cmt-heading': { textDecoration: 'none' },
 });

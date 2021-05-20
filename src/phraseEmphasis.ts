@@ -187,5 +187,6 @@ const baseTheme = EditorView.baseTheme({
   },
   '.cm-inline-code': {
     ...codeFontFamily,
+    fontSize: '13px',
   },
 });

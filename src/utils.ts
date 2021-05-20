@@ -23,6 +23,13 @@ function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive 
   return false;
 }
 
+/**
+ * Check if cursor is inside the line.
+ * @param state
+ * @param from
+ * @param to
+ * @returns
+ */
 function isCursorInsideLine(state: EditorState, from: number, to: number): boolean {
   let cursorStart = state.selection.main.from;
   let cursorEnd = state.selection.main.to;

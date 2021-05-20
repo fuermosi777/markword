@@ -10,6 +10,9 @@ const baseTheme = EditorView.theme({
   '&.cm-editor': {
     height: '100%',
   },
+  '&.cm-content': {
+    lineHeight: 2,
+  },
   '.cm-line': { ...regularFontFamily },
   '&.cm-focused': { outline: 'none' },
 });

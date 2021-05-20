@@ -23,6 +23,10 @@ const defaultTheme = EditorView.theme(
     '.cm-codeblock': {
       backgroundColor: '#F9F9F9',
     },
+    '.cm-inline-code': {
+      backgroundColor: 'rgba(255,255,255,0.15)',
+      padding: '1px',
+    },
   },
   { dark: false },
 );
@@ -40,6 +44,10 @@ const darkTheme = EditorView.theme(
     },
     '.cm-codeblock': {
       backgroundColor: '#464646',
+    },
+    '.cm-inline-code': {
+      backgroundColor: 'rgba(255,255,255,0.15)',
+      padding: '1px',
     },
   },
   { dark: true },
