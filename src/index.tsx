@@ -28,7 +28,7 @@ const extensions = [
   keymap.of(standardKeymap),
   EditorView.lineWrapping,
 
-  // listTask(),
+  listTask(),
   phraseEmphasis(),
   heading(),
   link(),
@@ -53,6 +53,35 @@ const colorThemeExtension = colorThemeComp.of(color);
 
 // State when first start.
 let startState = EditorState.create({
+  doc: `# Welcome to WordMark
+
+## Introduction
+
+WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor for macOS.
+
+## Features
+
+- Real time markdown render
+- Publish to Github pages (Jekyll) and Medium
+- Apple Silicon native support
+
+- [ ] Panaba
+- [x] Floor makeover
+- [ ] Buy some plants
+
+\`\`\`js
+function fibonacci(n) {
+  return n < 1 ? 0 : n <= 2 ? 1 : fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log(fibonacci(4));
+\`\`\`
+
+> Quotes
+> Support
+>
+Multi line
+`,
   extensions: makeExtensions(),
 });
 

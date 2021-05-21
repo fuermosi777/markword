@@ -27,6 +27,12 @@ const defaultTheme = EditorView.theme(
       backgroundColor: 'rgba(255,255,255,0.15)',
       padding: '1px',
     },
+    '.cm-list-ol': {
+      color: '#007AFF',
+    },
+    '.cm-bullet': {
+      backgroundColor: '#007AFF',
+    },
   },
   { dark: false },
 );
@@ -48,6 +54,12 @@ const darkTheme = EditorView.theme(
     '.cm-inline-code': {
       backgroundColor: 'rgba(255,255,255,0.15)',
       padding: '1px',
+    },
+    '.cm-list-li': {
+      color: '#0B84FF',
+    },
+    '.cm-bullet': {
+      backgroundColor: '#0B84FF',
     },
   },
   { dark: true },

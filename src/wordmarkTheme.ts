@@ -13,6 +13,9 @@ const baseTheme = EditorView.theme({
   '&.cm-content': {
     lineHeight: 2,
   },
+  '& .cm-scroller': {
+    padding: '60px 20%',
+  },
   '.cm-line': { ...regularFontFamily },
   '&.cm-focused': { outline: 'none' },
 });
