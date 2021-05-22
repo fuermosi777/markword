@@ -13,7 +13,7 @@ export function blockquote(): Extension {
   return [blockquoteDecorationPlugin, baseTheme];
 }
 
-const blockquoteRE = /^>\s{1}/;
+const blockquoteRE = /^>+\s*/;
 
 const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   class {
@@ -33,7 +33,7 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, /* inclusive=*/ false)) {
+          if (update && isCursorInside(update, from, to, /* inclusive=*/ true)) {
             return false;
           }
 

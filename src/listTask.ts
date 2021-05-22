@@ -57,7 +57,6 @@ const listTaskPlugin = ViewPlugin.fromClass(
         if (!iter.lineBreak) {
           let m = iter.value.match(listRE);
           if (m) {
-            console.log(m);
             let deco = Decoration.replace({
               widget: new BulletWidget(),
               inclusive: true,
