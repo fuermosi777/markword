@@ -16,7 +16,7 @@ const defaultTheme = EditorView.theme(
     },
     '.cm-content': { caretColor: '#188FE9' },
     '.cm-line': { color: '#1E1E1E' },
-    '.cm-line a': { color: '#188FE9' },
+    '.cm-line a': { color: '#007AFF' },
     '.cm-blockquote': {
       backgroundColor: '#F9F9F9',
     },
@@ -33,6 +33,12 @@ const defaultTheme = EditorView.theme(
     '.cm-bullet': {
       backgroundColor: '#007AFF',
     },
+    '.cmt-meta': {
+      color: '#007AFF',
+    },
+    '.cmt-url': {
+      color: '#007AFF',
+    },
   },
   { dark: false },
 );
@@ -44,7 +50,7 @@ const darkTheme = EditorView.theme(
     },
     '.cm-content': { caretColor: '#188FE9' },
     '.cm-line': { color: '#E3E3E3' },
-    '.cm-line a': { color: '#188FE9' },
+    '.cm-line a': { color: '#0B84FF' },
     '.cm-blockquote': {
       backgroundColor: '#464646',
     },
@@ -60,6 +66,12 @@ const darkTheme = EditorView.theme(
     },
     '.cm-bullet': {
       backgroundColor: '#0B84FF',
+    },
+    '.cmt-meta': {
+      color: '#0B84FF',
+    },
+    '.cmt-url': {
+      color: '#0B84FF',
     },
   },
   { dark: true },

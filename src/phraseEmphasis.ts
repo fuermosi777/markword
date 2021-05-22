@@ -180,7 +180,7 @@ class InlineCodeWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   '.cm-bold': {
-    fontWeight: 'bold',
+    fontWeight: 600,
   },
   '.cm-italic': {
     fontStyle: 'italic',

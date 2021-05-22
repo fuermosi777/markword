@@ -8,30 +8,15 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
+import { isCursorInside } from './utils';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.
-const listRE = /^(\s*)([\*\-\+]|[0-9]+([.)]))\s(?!(?:\[.\]))(?![\*\-])/;
+const listRE = /^(\s*)([\*\-\+])\s(?!(?:\[.\]))(?![\*\-])/;
 const taskRE = /^\s*([*\-+])\s\[(x| )\]\s/;
 
 export function listTask(): Extension {
-  return [listTaskPlugin, baseTheme, atomicListBullet];
+  return [listTaskPlugin, baseTheme];
 }
-
-// Prevent cursor to go into bullets.
-// https://discuss.codemirror.net/t/codemirror-6-single-line-and-or-avoid-carriage-return/2979
-const atomicListBullet = EditorState.transactionFilter.of((tr) => {
-  let doc = tr.newDoc,
-    { head } = tr.newSelection.main,
-    line = doc.lineAt(head);
-  let m = line.text.match(listRE);
-  if (m) {
-    console.log(tr);
-    console.log(line.from + m[1].length + m[2].length);
-    console.log(head);
-    console.log('---');
-  }
-  return tr;
-});
 
 const listTaskPlugin = ViewPlugin.fromClass(
   class {
@@ -43,11 +28,20 @@ const listTaskPlugin = ViewPlugin.fromClass(
 
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
+      // let taskDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
         this.getDecorationsFor(from, to, decorations);
       }
 
       this.decorations = Decoration.set(decorations, true);
+      this.decorations = this.decorations.update({
+        filter: (from, to, decor) => {
+          if (update && isCursorInside(update, from, to, false)) {
+            return false;
+          }
+          return true;
+        },
+      });
     }
 
     update(update: ViewUpdate) {
@@ -63,21 +57,17 @@ const listTaskPlugin = ViewPlugin.fromClass(
         if (!iter.lineBreak) {
           let m = iter.value.match(listRE);
           if (m) {
-            let order = Math.max(0, m[1].split('  ').length - 1);
+            console.log(m);
             let deco = Decoration.replace({
-              widget: new BulletWidget(order),
+              widget: new BulletWidget(),
               inclusive: true,
             });
-            decorations.push(deco.range(pos, pos + m[0].length));
+            decorations.push(deco.range(pos + m[1].length, pos + m[1].length + m[2].length));
           }
         }
         pos += iter.value.length;
       }
 
-      // eachLineMatchRe(doc, from, to, taskRE, (m, pos) => {
-      //   let deco = Decoration.replace({ widget: new CheckWidget(m[2] !== ' ', this.view) });
-      //   decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
-      // });
       for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
         if (!iter.lineBreak) {
           let m = iter.value.match(taskRE);
@@ -100,7 +90,7 @@ const listTaskPlugin = ViewPlugin.fromClass(
 );
 
 class BulletWidget extends WidgetType {
-  constructor(readonly level: number, readonly order?: string) {
+  constructor() {
     super();
   }
 
@@ -110,9 +100,7 @@ class BulletWidget extends WidgetType {
 
   toDOM() {
     let span = document.createElement('span');
-    span.textContent = this.order || '';
-    span.className = this.order ? 'cm-list-ol' : 'cm-list-ul';
-    span.style.marginLeft = `${30 * this.level}px`;
+    span.className = 'cm-list-ul';
 
     let bullet = document.createElement('span');
     bullet.className = 'cm-bullet';
@@ -166,9 +154,10 @@ class CheckWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   '.cm-list-ul': {
-    width: '30px',
+    width: '20px',
     verticalAlign: 'middle',
     display: 'inline-flex',
+    justifyContent: 'center',
   },
   '.cm-bullet': {
     width: '5px',
