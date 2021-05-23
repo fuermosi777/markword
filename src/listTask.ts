@@ -11,8 +11,9 @@ import {
 import { isCursorInside } from './utils';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.
-const listRE = /^(\s*)([\*\-\+])\s(?!(?:\[.\]))(?![\*\-])/;
-const taskRE = /^\s*([*\-+])\s\[(x| )\]\s/;
+export const ulistRE = /^(\s*)([\*\-\+])\s(?!(?:\[.\]))(?![\*\-])/;
+export const olistRE = /^(\s*)([0-9]+\.)\s/;
+export const taskRE = /^\s*([*\-+])\s\[(x| )\]\s/;
 
 export function listTask(): Extension {
   return [listTaskPlugin, baseTheme];
@@ -50,24 +51,38 @@ const listTaskPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
 
-      for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
+      for (
+        let pos = from, iter = doc.iterRange(from, to);
+        !iter.next().done;
+
+      ) {
         if (!iter.lineBreak) {
-          let m = iter.value.match(listRE);
+          let m = iter.value.match(ulistRE);
           if (m) {
             let deco = Decoration.replace({
               widget: new BulletWidget(),
               inclusive: true,
             });
-            decorations.push(deco.range(pos + m[1].length, pos + m[1].length + m[2].length));
+            decorations.push(
+              deco.range(pos + m[1].length, pos + m[1].length + m[2].length),
+            );
           }
         }
         pos += iter.value.length;
       }
 
-      for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
+      for (
+        let pos = from, iter = doc.iterRange(from, to);
+        !iter.next().done;
+
+      ) {
         if (!iter.lineBreak) {
           let m = iter.value.match(taskRE);
           if (m) {

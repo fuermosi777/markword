@@ -3,8 +3,8 @@ import './styles.less';
 import { EditorState, Extension, Compartment } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
-import { spaceTabBinding } from './commands';
-import { markdown } from '@codemirror/lang-markdown';
+import { insertNewlineContinueList, spaceTabBinding } from './commands';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { javascriptLanguage } from '@codemirror/lang-javascript';
 import {
   defaultHighlightStyle,
@@ -25,17 +25,22 @@ import { history, historyKeymap } from '@codemirror/history';
 
 const extensions = [
   wordmarkTheme(),
+  history(),
+  keymap.of([
+    spaceTabBinding,
+    insertNewlineContinueList,
+    ...standardKeymap,
+    ...historyKeymap,
+  ]),
+  EditorView.lineWrapping,
   markdown({
+    base: markdownLanguage,
     defaultCodeLanguage: javascriptLanguage,
     // Disable markdown keymaps.
     addKeymap: false,
   }),
   defaultHighlightStyle,
   classHighlightStyle,
-
-  history(),
-  keymap.of([...standardKeymap, ...historyKeymap, spaceTabBinding]),
-  EditorView.lineWrapping,
 
   listTask(),
   phraseEmphasis(),
