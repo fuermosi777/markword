@@ -1,11 +1,16 @@
+import './styles.less';
+
 import { EditorState, Extension, Compartment } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
+import { spaceTabBinding } from './commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { javascriptLanguage } from '@codemirror/lang-javascript';
-import { defaultHighlightStyle, classHighlightStyle } from '@codemirror/highlight';
+import {
+  defaultHighlightStyle,
+  classHighlightStyle,
+} from '@codemirror/highlight';
 import { phraseEmphasis } from './phraseEmphasis';
-import './styles.less';
 import { heading } from './heading';
 import { wordmarkTheme } from './wordmarkTheme';
 import { link } from './link';
@@ -16,16 +21,20 @@ import { codeblock } from './codeblock';
 import { hr } from './hr';
 import { webkit } from './webkit';
 import { defaultColor, darkColor } from './colorTheme';
+import { history, historyKeymap } from '@codemirror/history';
 
 const extensions = [
   wordmarkTheme(),
   markdown({
     defaultCodeLanguage: javascriptLanguage,
+    // Disable markdown keymaps.
+    addKeymap: false,
   }),
   defaultHighlightStyle,
   classHighlightStyle,
 
-  keymap.of(standardKeymap),
+  history(),
+  keymap.of([...standardKeymap, ...historyKeymap, spaceTabBinding]),
   EditorView.lineWrapping,
 
   listTask(),
@@ -44,7 +53,6 @@ type ThemeColor = 'Default' | 'Dark';
 
 const urlParams = new URLSearchParams(window.location.search);
 const themeFromUrl = urlParams.get('theme') as ThemeColor;
-console.log(themeFromUrl);
 let color: Extension = themeFromUrl === 'Dark' ? darkColor() : defaultColor();
 
 //https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983

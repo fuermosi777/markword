@@ -1,4 +1,4 @@
-import { EditorState, Extension } from '@codemirror/state';
+import { Extension } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,

@@ -1,4 +1,4 @@
-- [ ] Codeblock hightlight
-- [ ] add ref link and quick link "[Google][]"
-- [ ] list level, auto complete bullets
-- [ ] dont allow whitespaces bold emphaiss
+- add ref link "[Google][]" and quick link "<url>"
+- list level, auto complete bullets
+- dont allow whitespaces bold emphaiss
+- markdown level keymap
