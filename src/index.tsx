@@ -78,9 +78,11 @@ WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.ne
 - Publish to Github pages (Jekyll) and Medium
 - Apple Silicon native support
 
+1. Support ordered list
+2. When Enter
+
 - [ ] Panaba
 - [x] Floor makeover
-- [ ] Buy some plants
 
 \`\`\`js
 function fibonacci(n) {

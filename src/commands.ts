@@ -22,16 +22,22 @@ const insertTab: StateCommand = ({ state, dispatch }) => {
   return true;
 };
 
+// Gets order of the ordered list. E.g. "1" from "1. xxx".
+const olistOrderRE = /^(\s*)(\d+)(?=[.)])/;
+
 /// TODO: number list.
 /// Get the line from current selection, use RE to check if the current line is a list. If it is a list, then fetch the list indicator and append to a new line.
 const insertListTask: StateCommand = ({ state, dispatch }) => {
   let dont = null,
     changes = state.changeByRange((range) => {
       if (range.empty && markdownLanguage.isActiveAt(state, range.from)) {
+        // The line where the Enter is pressed.
         let line = state.doc.lineAt(range.from);
-        let m = line.text.match(taskRE) || line.text.match(ulistRE);
+        let m =
+          line.text.match(taskRE) ||
+          line.text.match(ulistRE) ||
+          line.text.match(olistRE);
         if (m) {
-          // Unordered list or task.
           let from = range.from;
           let changes: ChangeSpec[] = [];
           let isEmptyLine = m[0] === m.input;
@@ -42,18 +48,42 @@ const insertListTask: StateCommand = ({ state, dispatch }) => {
               changes: { from, to: range.from },
             };
           }
+          let orders = m[0].match(/\d+/g);
+          let futureText = m[0];
+          if (orders && orders.length > 0) {
+            // Ordered list
+            let order = (Number(orders[0]) || 0) + 1;
+            let preSpaces = m[1];
+            futureText = m[0].replace(/\d+/, String(order));
+            // Reorder numbers after this line.
+            // Move the pos to the start of the next line.
+            let pos = line.to + 1;
+            while (pos < state.doc.length) {
+              let line = state.doc.lineAt(pos);
+              let stillList = olistOrderRE.exec(line.text);
+              if (!stillList) break;
+              let nextPreSpaces = stillList[1];
+              if (nextPreSpaces != preSpaces) break;
+              order++;
+              changes.push({
+                from: line.from + stillList[1].length, // ?????
+                to: line.from + stillList[0].length,
+                insert: String(order),
+              });
+              pos = line.to + 1;
+            }
+          }
           changes.push({
             from,
             to: from,
-            insert: Text.of(['', m[0]]),
+            insert: Text.of(['', futureText]),
           });
           return {
-            range: EditorSelection.cursor(from + 1 + m[0].length),
+            range: EditorSelection.cursor(from + 1 + futureText.length),
             changes,
           };
         }
         m = line.text.match(olistRE);
-        console.log(m);
       }
       return (dont = { range });
     });
