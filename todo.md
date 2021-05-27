@@ -1,4 +1,3 @@
-- add ref link "[Google][]" and quick link "<url>"
-- list level, auto complete bullets
+- add ref link "[Google][]"
 - dont allow whitespaces bold emphaiss
 - markdown level keymap
