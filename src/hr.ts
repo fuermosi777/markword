@@ -3,6 +3,7 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
+  PluginField,
   Range,
   ViewPlugin,
   ViewUpdate,
@@ -49,10 +50,18 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
 
-      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
+      for (
+        let pos = from, cursor = doc.iterRange(from, to);
+        !cursor.next().done;
+
+      ) {
         if (!cursor.lineBreak) {
           let m = cursor.value.match(hrRE);
           if (m) {
@@ -69,6 +78,7 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
+    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 
@@ -95,10 +105,11 @@ class HrIndicatorWidget extends WidgetType {
 const baseTheme = EditorView.baseTheme({
   '.cm-hr': {
     width: '100%',
-    display: 'flex',
+    display: 'inline-flex',
     alignItems: 'center',
     height: '1px',
     backgroundColor: '#ccc',
     transform: 'translateY(10px)',
+    verticalAlign: 'top',
   },
 });

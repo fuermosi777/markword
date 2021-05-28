@@ -81,6 +81,8 @@ WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.ne
 1. Support ordered list
 2. When Enter
 
+---
+
 - [ ] Panaba
 - [x] Floor makeover
 
