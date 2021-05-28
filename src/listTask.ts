@@ -140,8 +140,12 @@ class CheckWidget extends WidgetType {
       cb.checked = true;
     }
 
-    cb.addEventListener('mousedown', (e) => {
-      const pos = this.view.posAtDOM(cb);
+    const wrapper = document.createElement('span');
+    wrapper.className = 'cm-checkbox-wrapper';
+    wrapper.appendChild(cb);
+
+    wrapper.addEventListener('mousedown', (e) => {
+      const pos = this.view.posAtDOM(wrapper);
       if (!this.checked) {
         this.view.dispatch({
           changes: { from: pos + 3, to: pos + 4, insert: 'x' },
@@ -153,7 +157,7 @@ class CheckWidget extends WidgetType {
         });
       }
     });
-    return cb;
+    return wrapper;
   }
 
   ignoreEvent(): boolean {
@@ -163,7 +167,7 @@ class CheckWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   '.cm-list-ul': {
-    width: '20px',
+    width: '30px',
     verticalAlign: 'middle',
     display: 'inline-flex',
     justifyContent: 'center',
@@ -173,11 +177,16 @@ const baseTheme = EditorView.baseTheme({
     height: '5px',
     borderRadius: '50%',
   },
+  '.cm-checkbox-wrapper': {
+    width: '30px',
+    display: 'inline-flex',
+    justifyContent: 'center',
+  },
   '.cm-checkbox': {
     border: '1px solid #C1C3C6',
     borderRadius: '4px',
     display: 'inline-block',
-    marginRight: '15px',
+    margin: '0',
     transition: 'all 0.2s',
     position: 'relative',
     verticalAlign: 'middle',
