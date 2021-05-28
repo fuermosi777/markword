@@ -3,17 +3,18 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
+  PluginField,
   Range,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { isCursorInside } from './utils';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.
-export const ulistRE = /^(\s*)([\*\-\+])\s(?!(?:\[.\]))(?![\*\-])/;
+export const ulistRE = /^(\s*)([\*\-\+]\s)(?!(?:\[.\]))(?![\*\-])/;
 export const olistRE = /^(\s*)([0-9]+\.)\s/;
-export const taskRE = /^\s*([*\-+])\s\[(x| )\]\s/;
+export const taskRE = /^(\s*)([*\-+]\s\[(x| )\]\s)/;
+const taskBulletLength = '- [ ]'.length;
 
 export function listTask(): Extension {
   return [listTaskPlugin, baseTheme];
@@ -29,20 +30,11 @@ const listTaskPlugin = ViewPlugin.fromClass(
 
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
-      // let taskDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
         this.getDecorationsFor(from, to, decorations);
       }
 
       this.decorations = Decoration.set(decorations, true);
-      this.decorations = this.decorations.update({
-        filter: (from, to, decor) => {
-          if (update && isCursorInside(update, from, to, false)) {
-            return false;
-          }
-          return true;
-        },
-      });
     }
 
     update(update: ViewUpdate) {
@@ -86,12 +78,14 @@ const listTaskPlugin = ViewPlugin.fromClass(
         if (!iter.lineBreak) {
           let m = iter.value.match(taskRE);
           if (m) {
-            let checked = m[2] !== ' ';
+            let checked = m[3] !== ' ';
             let deco = Decoration.replace({
               widget: new CheckWidget(checked, this.view),
               inclusive: true,
             });
-            decorations.push(deco.range(pos, pos + m[0].length));
+            decorations.push(
+              deco.range(pos + m[1].length, pos + m[1].length + m[2].length),
+            );
           }
         }
         pos += iter.value.length;
@@ -100,6 +94,7 @@ const listTaskPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
+    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 

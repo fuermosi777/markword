@@ -50,6 +50,8 @@ const insertListTask: StateCommand = ({ state, dispatch }) => {
           }
           let orders = m[0].match(/\d+/g);
           let futureText = m[0];
+          // If it is a todo bullet, make it unchecked.
+          futureText = futureText.replace('[x]', '[ ]');
           if (orders && orders.length > 0) {
             // Ordered list
             let order = (Number(orders[0]) || 0) + 1;
