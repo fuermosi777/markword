@@ -8,7 +8,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { isCursorInside, isCursorInsideLine } from './utils';
+import { isCursorInsideLine } from './utils';
 
 export function heading(): Extension {
   return [headingDecorationPlugin, baseTheme];
@@ -55,7 +55,11 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
       let { state } = this.view;
       let { doc } = state;
 
-      for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
+      for (
+        let pos = from, iter = doc.iterRange(from, to);
+        !iter.next().done;
+
+      ) {
         if (!iter.lineBreak) {
           let m = iter.value.match(headingRE);
           if (m) {

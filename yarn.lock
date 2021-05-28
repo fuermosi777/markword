@@ -164,20 +164,10 @@
     "@codemirror/state" "^0.18.0"
     "@codemirror/view" "^0.18.0"
 
-"@codemirror/view@^0.18.0":
-  version "0.18.13"
-  resolved "https://registry.yarnpkg.com/@codemirror/view/-/view-0.18.13.tgz#34c268895f2b1b3b9907abe9ecfee0136b2a91fe"
-  integrity sha512-3aFEh9UB3JyYXG0GTneC8q6KQ87obftwHtis8FI/7NeiLfT+miuVj1By1IteRDpTQQ+7FbFnjDw4WFYhEHBcaw==
-  dependencies:
-    "@codemirror/rangeset" "^0.18.0"
-    "@codemirror/state" "^0.18.0"
-    "@codemirror/text" "^0.18.0"
-    style-mod "^4.0.0"
-    w3c-keyname "^2.2.4"
-
-"@codemirror/view@git://github.com/codemirror/view#main":
-  version "0.18.13"
-  resolved "git://github.com/codemirror/view#2c94d2530558cef6f3cdcc9f1bb1eb0c9fe8c603"
+"@codemirror/view@^0.18.0", "@codemirror/view@^0.18.13":
+  version "0.18.14"
+  resolved "https://registry.yarnpkg.com/@codemirror/view/-/view-0.18.14.tgz#509f2a487e1fa62b6b147e3a9db5aab6ce228495"
+  integrity sha512-b83favt2XtbV343wzmY4e5lTwYBdpklFZ31jJ/SDGixx6Yj5xTgZd6NU6jkK/XOT40D1rcRoKcQfFbbpjLG1SA==
   dependencies:
     "@codemirror/rangeset" "^0.18.2"
     "@codemirror/state" "^0.18.0"
@@ -1096,9 +1086,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.723:
-  version "1.3.740"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.740.tgz#e38b7d2b848f632191b643e6dabca51be2162922"
-  integrity sha512-Mi2m55JrX2BFbNZGKYR+2ItcGnR4O5HhrvgoRRyZQlaMGQULqDhoGkLWHzJoshSzi7k1PUofxcDbNhlFrDZNhg==
+  version "1.3.742"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.742.tgz#7223215acbbd3a5284962ebcb6df85d88b95f200"
+  integrity sha512-ihL14knI9FikJmH2XUIDdZFWJxvr14rPSdOhJ7PpS27xbz8qmaRwCwyg/bmFwjWKmWK9QyamiCZVCvXm5CH//Q==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -3678,9 +3668,9 @@ webpack-sources@^2.3.0:
     source-map "^0.6.1"
 
 webpack@^5.24.3:
-  version "5.38.0"
-  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.38.0.tgz#bd9f9ef8a8778c7162f598647b7a6e6273cb55e8"
-  integrity sha512-9jrxzP0C3Q+ypaqaLU0TH3CgcSHR02cqPRCzOKkjiVJZoKSjoVH6Kf4Y1ytJj5NWoXSYydvhoHkaJO//ej2ckA==
+  version "5.38.1"
+  resolved "https://registry.yarnpkg.com/webpack/-/webpack-5.38.1.tgz#5224c7f24c18e729268d3e3bc97240d6e880258e"
+  integrity sha512-OqRmYD1OJbHZph6RUMD93GcCZy4Z4wC0ele4FXyYF0J6AxO1vOSuIlU1hkS/lDlR9CDYBz64MZRmdbdnFFoT2g==
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.47"

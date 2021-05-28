@@ -11,10 +11,11 @@ import {
 import { isCursorInside } from './utils';
 
 const linkRE = /\[([^\[\]]+)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?\)/g;
-const autoLinkRE = /<(https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)>/g;
+const autoLinkRE =
+  /<(https?:\/\/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)>/g;
 
 export function link(): Extension {
-  return [linkDecorationPlugin];
+  return [linkDecorationPlugin, baseTheme];
 }
 
 const linkDecorationPlugin = ViewPlugin.fromClass(
@@ -50,10 +51,18 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
 
-      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+      for (
+        let pos = from, cursor = doc.iterRange(from, to), m;
+        !cursor.next().done;
+
+      ) {
         if (!cursor.lineBreak) {
           while ((m = linkRE.exec(cursor.value))) {
             // An edge case where link should not preappend a "!", otherwise it would be an image.
@@ -66,13 +75,19 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
               }),
               inclusive: true,
             });
-            decorations.push(linkDecoration.range(pos + m.index, pos + m.index + m[0].length));
+            decorations.push(
+              linkDecoration.range(pos + m.index, pos + m.index + m[0].length),
+            );
           }
         }
         pos += cursor.value.length;
       }
 
-      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+      for (
+        let pos = from, cursor = doc.iterRange(from, to), m;
+        !cursor.next().done;
+
+      ) {
         if (!cursor.lineBreak) {
           while ((m = autoLinkRE.exec(cursor.value))) {
             const linkDecoration = Decoration.replace({
@@ -82,7 +97,9 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
               }),
               inclusive: true,
             });
-            decorations.push(linkDecoration.range(pos + m.index, pos + m.index + m[0].length));
+            decorations.push(
+              linkDecoration.range(pos + m.index, pos + m.index + m[0].length),
+            );
           }
         }
         pos += cursor.value.length;
@@ -108,18 +125,25 @@ class LinkWidget extends WidgetType {
   }
 
   eq(other: LinkWidget) {
-    return this.spec.displayText === other.spec.displayText && this.spec.url === other.spec.url;
+    return (
+      this.spec.displayText === other.spec.displayText &&
+      this.spec.url === other.spec.url
+    );
   }
 
   toDOM() {
-    let link = document.createElement('a');
+    let link = document.createElement('span');
+    link.className = 'cm-link';
     link.textContent = this.spec.displayText;
-    if (this.spec.url) {
-      link.href = this.spec.url;
-    }
     if (this.spec.title) {
       link.title = this.spec.title;
     }
+    link.addEventListener('mousedown', (e) => {
+      let webkit = (<any>window).webkit;
+      if (webkit) {
+        webkit.messageHandlers.RequestUrl.postMessage(this.spec.url);
+      }
+    });
     return link;
   }
 
@@ -127,3 +151,9 @@ class LinkWidget extends WidgetType {
     return false;
   }
 }
+
+const baseTheme = EditorView.baseTheme({
+  '.cm-link': {
+    cursor: 'pointer',
+  },
+});

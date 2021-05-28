@@ -14,7 +14,6 @@ import {
 export const ulistRE = /^(\s*)([\*\-\+]\s)(?!(?:\[.\]))(?![\*\-])/;
 export const olistRE = /^(\s*)([0-9]+\.)\s/;
 export const taskRE = /^(\s*)([*\-+]\s\[(x| )\]\s)/;
-const taskBulletLength = '- [ ]'.length;
 
 export function listTask(): Extension {
   return [listTaskPlugin, baseTheme];

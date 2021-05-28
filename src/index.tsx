@@ -4,7 +4,7 @@ import { EditorState, Extension, Compartment } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
-import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { markdown } from '@codemirror/lang-markdown';
 import { javascriptLanguage } from '@codemirror/lang-javascript';
 import {
   defaultHighlightStyle,
@@ -34,7 +34,6 @@ const extensions = [
   ]),
   EditorView.lineWrapping,
   markdown({
-    base: markdownLanguage,
     defaultCodeLanguage: javascriptLanguage,
     // Disable markdown keymaps.
     addKeymap: false,
@@ -70,7 +69,7 @@ let startState = EditorState.create({
 
 ## Introduction
 
-WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor for macOS. It supports <http://google.com> links.
+WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor for macOS. It supports <http://google.com> links, and \`inline codes\`.
 
 ## Features
 
