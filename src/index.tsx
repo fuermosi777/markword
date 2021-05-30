@@ -88,11 +88,13 @@ WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.ne
 ![photos](https://picsum.photos/200 =100x)
 
 \`\`\`js
+// This function is for demo purpose.
 function fibonacci(n) {
+  for (let i = 0; i < n.length; i++) {
+    console.log("Fi: ", fibonacci(4));
+  }
   return n < 1 ? 0 : n <= 2 ? 1 : fibonacci(n - 1) + fibonacci(n - 2);
 }
-
-console.log(fibonacci(4));
 \`\`\`
 
 > Quotes

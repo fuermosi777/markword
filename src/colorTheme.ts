@@ -24,8 +24,9 @@ const defaultTheme = EditorView.theme(
       backgroundColor: '#F9F9F9',
     },
     '.cm-inline-code': {
-      backgroundColor: 'rgba(255,255,255,0.15)',
-      padding: '1px',
+      backgroundColor: 'rgba(195,195,195,0.3)',
+      borderRadius: '3px',
+      padding: '2px',
     },
     '.cm-list-ol': {
       color: '#007AFF',
@@ -38,6 +39,30 @@ const defaultTheme = EditorView.theme(
     },
     '.cmt-url': {
       color: '#007AFF',
+    },
+    '.cmt-variableName': {
+      color: '#fb7c3e',
+    },
+    '.cmt-keyword': {
+      color: '#e83461',
+    },
+    '.cmt-number': {
+      color: '#e0b128',
+    },
+    '.cmt-propertyName': {
+      color: '#AC9CF2',
+    },
+    '.cmt-operator': {
+      color: '#31b4c3',
+    },
+    '.cmt-comment': {
+      color: '#ccc',
+    },
+    '.cmt-string': {
+      color: '#62a521',
+    },
+    '.cmt-punctuation': {
+      color: '#aaaaaa',
     },
   },
   { dark: false },
@@ -58,8 +83,9 @@ const darkTheme = EditorView.theme(
       backgroundColor: '#464646',
     },
     '.cm-inline-code': {
-      backgroundColor: 'rgba(255,255,255,0.15)',
-      padding: '1px',
+      backgroundColor: 'rgba(195,195,195,0.15)',
+      borderRadius: '3px',
+      padding: '2px',
     },
     '.cm-list-li': {
       color: '#0B84FF',
@@ -72,6 +98,30 @@ const darkTheme = EditorView.theme(
     },
     '.cmt-url': {
       color: '#0B84FF',
+    },
+    '.cmt-variableName': {
+      color: '#FC9867',
+    },
+    '.cmt-keyword': {
+      color: '#FF6188',
+    },
+    '.cmt-number': {
+      color: '#FFD866',
+    },
+    '.cmt-propertyName': {
+      color: '#AC9CF2',
+    },
+    '.cmt-operator': {
+      color: '#78DCE8',
+    },
+    '.cmt-comment': {
+      color: '#5a5858',
+    },
+    '.cmt-string': {
+      color: '#A8DC76',
+    },
+    '.cmt-punctuation': {
+      color: '#aaaaaa',
     },
   },
   { dark: true },
