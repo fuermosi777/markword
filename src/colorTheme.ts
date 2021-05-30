@@ -34,8 +34,14 @@ const defaultTheme = EditorView.theme(
     '.cm-bullet': {
       backgroundColor: '#007AFF',
     },
+    '.cm-hr': {
+      backgroundColor: '#CCC',
+    },
     '.cmt-meta': {
       color: '#007AFF',
+    },
+    'cmt-labelName': {
+      color: '#aaa',
     },
     '.cmt-url': {
       color: '#007AFF',
@@ -77,10 +83,10 @@ const darkTheme = EditorView.theme(
     '.cm-line': { color: '#E3E3E3' },
     '.cm-link': { color: '#0B84FF' },
     '.cm-blockquote': {
-      backgroundColor: '#464646',
+      backgroundColor: '#2d2d2d',
     },
     '.cm-codeblock': {
-      backgroundColor: '#464646',
+      backgroundColor: '#2d2d2d',
     },
     '.cm-inline-code': {
       backgroundColor: 'rgba(195,195,195,0.15)',
@@ -93,8 +99,14 @@ const darkTheme = EditorView.theme(
     '.cm-bullet': {
       backgroundColor: '#0B84FF',
     },
+    '.cm-hr': {
+      backgroundColor: '#505050',
+    },
     '.cmt-meta': {
       color: '#0B84FF',
+    },
+    'cmt-labelName': {
+      color: '#aaa',
     },
     '.cmt-url': {
       color: '#0B84FF',

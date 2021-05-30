@@ -108,7 +108,6 @@ const baseTheme = EditorView.baseTheme({
     display: 'inline-flex',
     alignItems: 'center',
     height: '1px',
-    backgroundColor: '#ccc',
     transform: 'translateY(10px)',
     verticalAlign: 'top',
   },
