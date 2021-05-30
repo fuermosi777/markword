@@ -78,7 +78,7 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
-    // provide: PluginField.atomicRanges.from((v) => v.decorations),
+    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 

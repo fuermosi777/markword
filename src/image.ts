@@ -3,6 +3,7 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
+  PluginField,
   Range,
   ViewPlugin,
   ViewUpdate,
@@ -12,10 +13,11 @@ import { isCursorInside } from './utils';
 
 // TODO: reference style
 // ![Alt text][id]
-const imageRE = /!\[([^\[\]]*)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?\)/g;
+const imageRE =
+  /!\[([^\[\]]*)\]\(([^\)\(\s]+)(?:\s"([^\"]+)")?(?:\s=(\d+x\d*))?\)/g;
 
 export function image(): Extension {
-  return [imageDecorationPlugin];
+  return [imageDecorationPlugin, baseTheme];
 }
 
 const imageDecorationPlugin = ViewPlugin.fromClass(
@@ -36,7 +38,10 @@ const imageDecorationPlugin = ViewPlugin.fromClass(
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, /* inclusive= */ false)) {
+          if (
+            update &&
+            isCursorInside(update, from, to, /* inclusive= */ false)
+          ) {
             return false;
           }
 
@@ -51,10 +56,18 @@ const imageDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
 
-      for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+      for (
+        let pos = from, cursor = doc.iterRange(from, to), m;
+        !cursor.next().done;
+
+      ) {
         if (!cursor.lineBreak) {
           while ((m = imageRE.exec(cursor.value))) {
             const linkDecoration = Decoration.replace({
@@ -62,10 +75,13 @@ const imageDecorationPlugin = ViewPlugin.fromClass(
                 altText: m[1],
                 url: m[2],
                 title: m[3],
+                size: m[4],
               }),
               inclusive: true,
             });
-            decorations.push(linkDecoration.range(pos + m.index, pos + m.index + m[0].length));
+            decorations.push(
+              linkDecoration.range(pos + m.index, pos + m.index + m[0].length),
+            );
           }
         }
         pos += cursor.value.length;
@@ -74,6 +90,7 @@ const imageDecorationPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
+    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 
@@ -81,6 +98,8 @@ interface ImageWidgetSpec {
   readonly altText?: string;
   readonly url?: string;
   readonly title?: string;
+  // Could be 30x (only width) or 30x30 (width x height)
+  readonly size?: string;
   // ![Alt text][id] reference style link
   readonly ref?: string;
 }
@@ -94,18 +113,28 @@ class ImageWidget extends WidgetType {
     return (
       this.spec.altText === other.spec.altText &&
       this.spec.title === other.spec.title &&
-      this.spec.ref === other.spec.ref
+      this.spec.ref === other.spec.ref &&
+      this.spec.size === other.spec.size
     );
   }
 
   toDOM() {
     let image = document.createElement('img');
     image.className = 'cm-image';
+    image.style.cursor = 'pointer';
     if (this.spec.url) {
       image.src = this.spec.url;
     }
     if (this.spec.title) {
       image.title = this.spec.title;
+    }
+    if (this.spec.size) {
+      let [width, height] = this.spec.size.split('x');
+      image.width = Number(width);
+      if (!height) {
+        height = width;
+      }
+      image.height = Number(height);
     }
     image.addEventListener('loadstart', function (e) {
       console.log('Image load started');
@@ -120,3 +149,9 @@ class ImageWidget extends WidgetType {
     return false;
   }
 }
+
+const baseTheme = EditorView.baseTheme({
+  '.cm-image': {
+    maxWidth: '100%',
+  },
+});

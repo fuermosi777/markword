@@ -85,6 +85,8 @@ WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.ne
 - [ ] Panaba
 - [x] Floor makeover
 
+![photos](https://picsum.photos/200 =100x)
+
 \`\`\`js
 function fibonacci(n) {
   return n < 1 ? 0 : n <= 2 ? 1 : fibonacci(n - 1) + fibonacci(n - 2);
