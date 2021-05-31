@@ -1,7 +1,7 @@
 import { Extension } from '@codemirror/state';
 import { EditorView, ViewPlugin, ViewUpdate } from '@codemirror/view';
 
-export function webkit(): Extension {
+export function webkitPlugins(): Extension {
   return [webkitPlugin];
 }
 
@@ -13,7 +13,9 @@ const webkitPlugin = ViewPlugin.fromClass(
       if (update.docChanged) {
         let webkit = (<any>window).webkit;
         if (webkit) {
-          webkit.messageHandlers.DocChanged.postMessage(update.state.toJSON().doc);
+          webkit.messageHandlers.DocChanged.postMessage(
+            update.state.toJSON().doc,
+          );
         }
       }
     }

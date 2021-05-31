@@ -19,7 +19,7 @@ import { image } from './image';
 import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
 import { hr } from './hr';
-import { webkit } from './webkit';
+import { webkitPlugins } from './webkit';
 import { defaultColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
 
@@ -50,21 +50,17 @@ const extensions = [
   codeblock(),
   hr(),
 
-  webkit(),
+  webkitPlugins(),
 ];
 
 type ThemeColor = 'Default' | 'Dark';
 
-const urlParams = new URLSearchParams(window.location.search);
-const themeFromUrl = urlParams.get('theme') as ThemeColor;
-let color: Extension = themeFromUrl === 'Dark' ? darkColor() : defaultColor();
-
 //https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983
 let colorThemeComp = new Compartment();
-const colorThemeExtension = colorThemeComp.of(color);
+const colorThemeExtension = colorThemeComp.of(getColor());
 
-// State when first start.
-let startState = EditorState.create({
+// State for debugging.
+let debugState = EditorState.create({
   doc: `# Welcome to WordMark
 
 ## Introduction
@@ -105,30 +101,93 @@ Multi line
   extensions: makeExtensions(),
 });
 
+/// Get color theme based on current environment.
+/// If name is given, use it. Otherwise respect the name from URL params.
+function getColor(name?: ThemeColor): Extension {
+  if (name) {
+    return name === 'Dark' ? darkColor() : defaultColor();
+  }
+  // Override if forced set in the url params.
+  const urlParams = new URLSearchParams(window.location.search);
+  const themeFromUrl = urlParams.get('theme') as ThemeColor;
+  if (themeFromUrl) {
+    return themeFromUrl === 'Dark' ? darkColor() : defaultColor();
+  }
+  let color = defaultColor();
+  if (
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  ) {
+    color = darkColor();
+  }
+
+  return color;
+}
+
 function makeExtensions() {
   return [...extensions, colorThemeExtension];
 }
 
-let view = new EditorView({
-  state: startState,
-  parent: document.getElementById('container')!,
-});
-
-function ClientUpdateDoc(doc: string) {
-  view.setState(EditorState.create({ doc, extensions: makeExtensions() }));
+// https://stackoverflow.com/a/64752311
+function decodeBase64(base64: string) {
+  const text = atob(base64);
+  const length = text.length;
+  const bytes = new Uint8Array(length);
+  for (let i = 0; i < length; i++) {
+    bytes[i] = text.charCodeAt(i);
+  }
+  const decoder = new TextDecoder(); // default is utf-8
+  return decoder.decode(bytes);
 }
 
-function ClientUpdateTheme(name: ThemeColor) {
-  if (name === 'Default') {
-    color = defaultColor();
-  } else if (name === 'Dark') {
-    color = darkColor();
-  }
+let view: EditorView;
+
+window
+  .matchMedia('(prefers-color-scheme: dark)')
+  .addEventListener('change', (event) => {
+    if (event.matches) {
+      ClientUpdateTheme('Dark');
+    } else {
+      ClientUpdateTheme('Default');
+    }
+  });
+
+if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  view = new EditorView({
+    state: debugState,
+    parent: document.getElementById('container')!,
+  });
+}
+
+/// Start a new editor with base64 encoded content.
+function ClientInitEditor(doc: string) {
   if (view) {
-    view.state.update({ effects: colorThemeComp.reconfigure(color) });
+    view.destroy();
+  }
+  view = new EditorView({
+    state: EditorState.create({
+      doc: decodeBase64(doc),
+      extensions: makeExtensions(),
+    }),
+    parent: document.getElementById('container')!,
+  });
+}
+
+/// Updates the theme for the editor.
+function ClientUpdateTheme(name: ThemeColor) {
+  if (view) {
+    view.dispatch({
+      effects: colorThemeComp.reconfigure(getColor(name)),
+    });
   }
 }
 
 const _global = (window /* browser */ || global) /* node */ as any;
-_global.ClientUpdateDoc = ClientUpdateDoc;
+_global.ClientInitEditor = ClientInitEditor;
 _global.ClientUpdateTheme = ClientUpdateTheme;
+
+// @ts-ignore
+const webkit = window.webkit;
+if (webkit) {
+  webkit.messageHandlers.Loaded.postMessage('');
+}
