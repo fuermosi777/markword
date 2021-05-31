@@ -1,11 +1,6 @@
 import './styles.less';
 
-import {
-  EditorState,
-  Extension,
-  Compartment,
-  StateEffect,
-} from '@codemirror/state';
+import { EditorState, Extension, Compartment } from '@codemirror/state';
 import { EditorView, highlightActiveLine, keymap } from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
@@ -28,6 +23,7 @@ import { webkitPlugins } from './webkit';
 import { defaultColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
 import { hideActiveLine, showActiveLine } from './activeLine';
+import { fontSize } from './fontSize';
 
 const extensions = [
   wordmarkTheme(),
@@ -68,6 +64,9 @@ const colorThemeExtension = colorThemeComp.of(getColor());
 
 let activeLineComp = new Compartment();
 const activeLineExtension = activeLineComp.of(showActiveLine());
+
+let fontSizeComp = new Compartment();
+const fontSizeExtension = fontSizeComp.of(fontSize(16));
 
 // State for debugging.
 let debugState = EditorState.create({
@@ -135,7 +134,12 @@ function getColor(name?: ThemeColor): Extension {
 }
 
 function makeExtensions() {
-  return [...extensions, colorThemeExtension, activeLineExtension];
+  return [
+    ...extensions,
+    colorThemeExtension,
+    activeLineExtension,
+    fontSizeExtension,
+  ];
 }
 
 // https://stackoverflow.com/a/64752311
@@ -192,6 +196,14 @@ function ClientUpdateTheme(name: ThemeColor) {
   }
 }
 
+function ClientUpdateFontSize(value: number) {
+  if (view) {
+    view.dispatch({
+      effects: fontSizeComp.reconfigure(fontSize(value)),
+    });
+  }
+}
+
 function ClientToggleActiveLine(on: boolean) {
   if (view) {
     view.dispatch({
@@ -205,6 +217,7 @@ function ClientToggleActiveLine(on: boolean) {
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
+_global.ClientUpdateFontSize = ClientUpdateFontSize;
 
 // @ts-ignore
 const webkit = window.webkit;

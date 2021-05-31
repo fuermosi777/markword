@@ -64,19 +64,32 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    getDecorationsFor(from: number, to: number, decorations: Range<Decoration>[]) {
+    getDecorationsFor(
+      from: number,
+      to: number,
+      decorations: Range<Decoration>[],
+    ) {
       let { doc } = this.view.state;
 
       for (const r of emphasisRE.bold) {
-        for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+        for (
+          let pos = from, cursor = doc.iterRange(from, to), m;
+          !cursor.next().done;
+
+        ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
               // An edge case.
-              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*') continue;
+              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*')
+                continue;
               // No all whitespaces.
               if (m[1].trim().length === 0) continue;
-              let deco = Decoration.replace({ widget: new BoldWidget(m[0], m[1]) });
-              decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
+              let deco = Decoration.replace({
+                widget: new BoldWidget(m[0], m[1]),
+              });
+              decorations.push(
+                deco.range(pos + m.index, pos + m.index + m[0].length),
+              );
             }
           }
           pos += cursor.value.length;
@@ -84,15 +97,24 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       }
 
       for (const r of emphasisRE.italic) {
-        for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+        for (
+          let pos = from, cursor = doc.iterRange(from, to), m;
+          !cursor.next().done;
+
+        ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
               // An edge case.
-              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*') continue;
+              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*')
+                continue;
               // No all whitespaces.
               if (m[1].trim().length === 0) continue;
-              let deco = Decoration.replace({ widget: new ItalicWidget(m[0], m[1]) });
-              decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
+              let deco = Decoration.replace({
+                widget: new ItalicWidget(m[0], m[1]),
+              });
+              decorations.push(
+                deco.range(pos + m.index, pos + m.index + m[0].length),
+              );
             }
           }
           pos += cursor.value.length;
@@ -100,15 +122,23 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       }
 
       for (const r of emphasisRE.inlineCode) {
-        for (let pos = from, cursor = doc.iterRange(from, to), m; !cursor.next().done; ) {
+        for (
+          let pos = from, cursor = doc.iterRange(from, to), m;
+          !cursor.next().done;
+
+        ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
               // An edge case.
               if (m.input[m.index - 1] === '`') continue;
               // No all whitespaces.
               if (m[1].trim().length === 0) continue;
-              let deco = Decoration.replace({ widget: new InlineCodeWidget(m[0], m[1]) });
-              decorations.push(deco.range(pos + m.index, pos + m.index + m[0].length));
+              let deco = Decoration.replace({
+                widget: new InlineCodeWidget(m[0], m[1]),
+              });
+              decorations.push(
+                deco.range(pos + m.index, pos + m.index + m[0].length),
+              );
             }
           }
           pos += cursor.value.length;
@@ -187,6 +217,6 @@ const baseTheme = EditorView.baseTheme({
   },
   '.cm-inline-code': {
     ...codeFontFamily,
-    fontSize: '13px',
+    fontSize: `${13 / 16}em`,
   },
 });

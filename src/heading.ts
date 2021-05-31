@@ -114,11 +114,15 @@ class HeaderIndicatorWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  '.cmt-heading': { textDecoration: 'none', fontWeight: 500, fontSize: '24px' },
-  '.cm-h1 .cmt-heading': { fontSize: '28px' },
-  '.cm-h2 .cmt-heading': { fontSize: '24px' },
-  '.cm-h3 .cmt-heading': { fontSize: '18px' },
-  '.cm-h4 .cmt-heading': { fontSize: '16px' },
-  '.cm-h5 .cmt-heading': { fontSize: '14px' },
-  '.cm-h6 .cmt-heading': { fontSize: '14px' },
+  '.cmt-heading': {
+    textDecoration: 'none',
+    fontWeight: 500,
+    fontSize: `${24 / 16}em`,
+  },
+  '.cm-h1 .cmt-heading': { fontSize: `${28 / 16}em` },
+  '.cm-h2 .cmt-heading': { fontSize: `${24 / 16}em` },
+  '.cm-h3 .cmt-heading': { fontSize: `${18 / 16}em` },
+  '.cm-h4 .cmt-heading': { fontSize: `${16 / 16}em` },
+  '.cm-h5 .cmt-heading': { fontSize: `${14 / 16}em` },
+  '.cm-h6 .cmt-heading': { fontSize: `${14 / 16}em` },
 });
