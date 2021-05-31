@@ -141,7 +141,7 @@ class LinkWidget extends WidgetType {
     link.addEventListener('mousedown', (e) => {
       let webkit = (<any>window).webkit;
       if (webkit) {
-        webkit.messageHandlers.RequestUrl.postMessage(this.spec.url);
+        webkit.messageHandlers.RequestURL.postMessage(this.spec.url);
       }
     });
     return link;
