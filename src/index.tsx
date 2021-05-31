@@ -1,7 +1,12 @@
 import './styles.less';
 
-import { EditorState, Extension, Compartment } from '@codemirror/state';
-import { EditorView, keymap } from '@codemirror/view';
+import {
+  EditorState,
+  Extension,
+  Compartment,
+  StateEffect,
+} from '@codemirror/state';
+import { EditorView, highlightActiveLine, keymap } from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
 import { markdown } from '@codemirror/lang-markdown';
@@ -22,6 +27,7 @@ import { hr } from './hr';
 import { webkitPlugins } from './webkit';
 import { defaultColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
+import { hideActiveLine, showActiveLine } from './activeLine';
 
 const extensions = [
   wordmarkTheme(),
@@ -40,6 +46,7 @@ const extensions = [
   }),
   defaultHighlightStyle,
   classHighlightStyle,
+  highlightActiveLine(),
 
   listTask(),
   phraseEmphasis(),
@@ -58,6 +65,9 @@ type ThemeColor = 'Default' | 'Dark';
 //https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983
 let colorThemeComp = new Compartment();
 const colorThemeExtension = colorThemeComp.of(getColor());
+
+let activeLineComp = new Compartment();
+const activeLineExtension = activeLineComp.of(showActiveLine());
 
 // State for debugging.
 let debugState = EditorState.create({
@@ -125,7 +135,7 @@ function getColor(name?: ThemeColor): Extension {
 }
 
 function makeExtensions() {
-  return [...extensions, colorThemeExtension];
+  return [...extensions, colorThemeExtension, activeLineExtension];
 }
 
 // https://stackoverflow.com/a/64752311
@@ -182,9 +192,19 @@ function ClientUpdateTheme(name: ThemeColor) {
   }
 }
 
+function ClientToggleActiveLine(on: boolean) {
+  if (view) {
+    view.dispatch({
+      effects: activeLineComp.reconfigure(
+        on ? showActiveLine() : hideActiveLine(),
+      ),
+    });
+  }
+}
+
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
-_global.ClientUpdateTheme = ClientUpdateTheme;
+_global.ClientToggleActiveLine = ClientToggleActiveLine;
 
 // @ts-ignore
 const webkit = window.webkit;

@@ -1,6 +1,6 @@
 import { EditorState } from '@codemirror/state';
 import { Text } from '@codemirror/text';
-import { ViewUpdate, WidgetType } from '@codemirror/view';
+import { EditorView, ViewUpdate, WidgetType } from '@codemirror/view';
 
 /**
  * Check if cursor is inside the widget.
@@ -9,14 +9,27 @@ import { ViewUpdate, WidgetType } from '@codemirror/view';
  * @param to
  * @param inclusive Whether the left and right edges are included. Default is true.
  */
-function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive = true): boolean {
+function isCursorInside(
+  update: ViewUpdate,
+  from: number,
+  to: number,
+  inclusive = true,
+): boolean {
   let latestTr = update.transactions[update.transactions.length - 1];
 
   if (latestTr && latestTr.selection) {
-    if (inclusive && latestTr.selection.main.head >= from && latestTr.selection.main.head <= to) {
+    if (
+      inclusive &&
+      latestTr.selection.main.head >= from &&
+      latestTr.selection.main.head <= to
+    ) {
       return true;
     }
-    if (!inclusive && latestTr.selection.main.head > from && latestTr.selection.main.head < to) {
+    if (
+      !inclusive &&
+      latestTr.selection.main.head > from &&
+      latestTr.selection.main.head < to
+    ) {
       return true;
     }
   }
@@ -30,7 +43,11 @@ function isCursorInside(update: ViewUpdate, from: number, to: number, inclusive 
  * @param to
  * @returns
  */
-function isCursorInsideLine(state: EditorState, from: number, to: number): boolean {
+function isCursorInsideLine(
+  state: EditorState,
+  from: number,
+  to: number,
+): boolean {
   let cursorStart = state.selection.main.from;
   let cursorEnd = state.selection.main.to;
   if (from <= cursorStart && cursorStart <= to) {
