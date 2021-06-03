@@ -3,9 +3,9 @@
 
 
 "@codemirror/autocomplete@^0.18.0":
-  version "0.18.5"
-  resolved "https://registry.yarnpkg.com/@codemirror/autocomplete/-/autocomplete-0.18.5.tgz#5c25ddbef858503920fa4912b48bf78be93ee462"
-  integrity sha512-Zp/HMTwvaP4B01HQx+5Ga0xBBLAwNaAlbALip355NPRBkYX9PZheX5b/F5IUAdI6kIrF2eYz1xAOChXgYg9maw==
+  version "0.18.6"
+  resolved "https://registry.yarnpkg.com/@codemirror/autocomplete/-/autocomplete-0.18.6.tgz#ba185148f0bac0391d26d29cb737f1d45280e42f"
+  integrity sha512-pKKv1caMxgdOx4/oyPN47oRwM8G0w5z2kDPXfSEpOsxPEkYMbkvimoDp8UEfUbyScc7m4OEkfXkiC0A3B0/g4w==
   dependencies:
     "@codemirror/language" "^0.18.0"
     "@codemirror/state" "^0.18.0"
@@ -138,9 +138,9 @@
     "@codemirror/view" "^0.18.0"
 
 "@codemirror/rangeset@^0.18.0", "@codemirror/rangeset@^0.18.2":
-  version "0.18.2"
-  resolved "https://registry.yarnpkg.com/@codemirror/rangeset/-/rangeset-0.18.2.tgz#37feec9763d5ca88f4c546d28d414a323ca2a430"
-  integrity sha512-rXXuSLlsbtHDKVx9xvP6jGOcjk4fXHZuIr9//ccKYqrCG5RRBvwzcdNTCi1H9tXzBwj5xA4nmDe8fCi6GCAzLw==
+  version "0.18.3"
+  resolved "https://registry.yarnpkg.com/@codemirror/rangeset/-/rangeset-0.18.3.tgz#78d001f17385cf462647a60f8b15dab11990c2b1"
+  integrity sha512-p6bPVr6Cw0yh/QSelsg0RoNaG4btuzZo7YMT+WFwZsjbr7+X0dVpd2vqLAHIeDUfvOzrEI/dXXPKLpZZgYeU+g==
   dependencies:
     "@codemirror/state" "^0.18.0"
 
@@ -165,9 +165,9 @@
     "@codemirror/view" "^0.18.0"
 
 "@codemirror/view@^0.18.0", "@codemirror/view@^0.18.13":
-  version "0.18.15"
-  resolved "https://registry.yarnpkg.com/@codemirror/view/-/view-0.18.15.tgz#07e68a7b1050aba8a1754aff9309abaeb7ec52b4"
-  integrity sha512-xb95w3fzyw+rNp7dJpEL+aqn10YqeFNcG2sUk4KdjdTu3RWC0+eAJ11uXaxLi1SqKisJ6klxHA+fRZbCjSiyvA==
+  version "0.18.16"
+  resolved "https://registry.yarnpkg.com/@codemirror/view/-/view-0.18.16.tgz#8cfb8751bd0224df1fa757abebd2ad2113ee1745"
+  integrity sha512-5sFdVXV4Gdw8/JfyjzIAVL+IrLIGPoXrqs+fZmu3rPMQEnw7u/EkG2aKxnwf/IdDPLLVK6FDRWoddaZ25VIjdQ==
   dependencies:
     "@codemirror/rangeset" "^0.18.2"
     "@codemirror/state" "^0.18.0"
@@ -217,7 +217,12 @@
     "@types/estree" "*"
     "@types/json-schema" "*"
 
-"@types/estree@*", "@types/estree@^0.0.47":
+"@types/estree@*":
+  version "0.0.48"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.48.tgz#18dc8091b285df90db2f25aa7d906cfc394b7f74"
+  integrity sha512-LfZwXoGUDo0C3me81HXgkBg5CTQYb6xzEl+fNmbO4JdRiSKQ8A0GD1OBBvKAIsbCUgoyAty7m99GqqMQe784ew==
+
+"@types/estree@^0.0.47":
   version "0.0.47"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.47.tgz#d7a51db20f0650efec24cd04994f523d93172ed4"
   integrity sha512-c5ciR06jK8u9BstrmJyO97m+klJrrhCf9u3rLu3DEAJBirxRqSCvDQoYKmxuYwQI5SZChAWu+tq9oVlGRuzPAg==
@@ -241,9 +246,9 @@
   integrity sha512-1z8k4wzFnNjVK/tlxvrWuK5WMt6mydWWP7+zvH5eFep4oj+UkrfiJTRtjCeBXNpwaA/FYqqtb4/QS4ianFpIRA==
 
 "@types/node@*":
-  version "15.6.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.6.1.tgz#32d43390d5c62c5b6ec486a9bc9c59544de39a08"
-  integrity sha512-7EIraBEyRHEe7CH+Fm1XvgqU6uwZN8Q7jppJGcqjROMT29qhAuuOxYB1uEY5UMYQKEmA5D+5tBnhdaPXSsLONA==
+  version "15.12.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-15.12.0.tgz#6a459d261450a300e6865faeddb5af01c3389bb3"
+  integrity sha512-+aHJvoCsVhO2ZCuT4o5JtcPrCPyDE3+1nvbDprYes+pPkEsbjH7AGUCNtjMOXS0fqH14t+B7yLzaqSz92FPWyw==
 
 "@webassemblyjs/ast@1.11.0":
   version "1.11.0"
@@ -1086,9 +1091,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.723:
-  version "1.3.743"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.743.tgz#fcec24d6d647cb84fd796b42caa1b4039a180894"
-  integrity sha512-K2wXfo9iZQzNJNx67+Pld0DRF+9bYinj62gXCdgPhcu1vidwVuLPHQPPFnCdO55njWigXXpfBiT90jGUPbw8Zg==
+  version "1.3.746"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.746.tgz#4ff1251986d751ba6e0acee516e04bc205511463"
+  integrity sha512-3ffyGODL38apwSsIgXaWnAKNXChsjXhAmBTjbqCbrv1fBbVltuNLWh0zdrQbwK/oxPQ/Gss/kYfFAPPGu9mszQ==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -1217,9 +1222,9 @@ execa@^1.0.0:
     strip-eof "^1.0.0"
 
 execa@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/execa/-/execa-5.0.1.tgz#aee63b871c9b2cb56bc9addcd3c70a785c6bf0d1"
-  integrity sha512-4hFTjFbFzQa3aCLobpbPJR/U+VoL1wdV5ozOWjeet0AWDeYr9UFGM1eUFWHX+VtOWFq4p0xXUXfW1YxUaP4fpw==
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/execa/-/execa-5.1.0.tgz#3ea50ee863d226bfa323528cce1684e7481dfe46"
+  integrity sha512-CkdUB7s2y6S+d4y+OM/+ZtQcJCiKUCth4cNImGMqrt2zEVtW2rfHGspQBE1GDo6LjeNIQmTPKXqTCKjqFKyu3A==
   dependencies:
     cross-spawn "^7.0.3"
     get-stream "^6.0.0"
