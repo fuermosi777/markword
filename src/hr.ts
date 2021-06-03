@@ -9,6 +9,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
+import { codeFontFamily } from './theme';
 import { isCursorInside } from './utils';
 
 export function hr(): Extension {
@@ -32,7 +33,6 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
       }
 
       this.decorations = Decoration.set(decorations, true);
-
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
           if (update && isCursorInside(update, from, to, false)) {
@@ -55,25 +55,68 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
       to: number,
       decorations: Range<Decoration>[],
     ) {
-      let { doc } = this.view.state;
+      let { view } = this;
+      let { doc } = view.state;
+      let insideFrontMatter = false;
 
       for (
-        let pos = from, cursor = doc.iterRange(from, to);
-        !cursor.next().done;
+        let pos = from, iter = doc.iterRange(from, to);
+        !iter.next().done;
 
       ) {
-        if (!cursor.lineBreak) {
-          let m = cursor.value.match(hrRE);
-          if (m) {
+        if (!iter.lineBreak) {
+          // Handle front matters
+          if (pos === 0 && iter.value !== '---') break;
+          if (pos === 0 && iter.value === '---') {
+            insideFrontMatter = true;
+            this.addFrontMatterLineDecoration(
+              'cm-front-matter-start',
+              decorations,
+              pos,
+            );
+          }
+          if (insideFrontMatter) {
+            this.addFrontMatterLineDecoration(
+              'cm-front-matter',
+              decorations,
+              pos,
+            );
+          }
+
+          // Create horizontal lines.
+          let m = iter.value.match(hrRE);
+          if (m && !insideFrontMatter) {
             const hrDeco = Decoration.replace({
               widget: new HrIndicatorWidget(m[0]),
               inclusive: false,
             });
             decorations.push(hrDeco.range(pos, pos + m[0].length));
           }
+
+          if (pos > 0 && iter.value === '---') {
+            this.addFrontMatterLineDecoration(
+              'cm-front-matter-end',
+              decorations,
+              pos,
+            );
+            insideFrontMatter = false;
+          }
         }
-        pos += cursor.value.length;
+        pos += iter.value.length;
       }
+    }
+
+    addFrontMatterLineDecoration(
+      className: string,
+      lineDecorations: Range<Decoration>[],
+      pos: number,
+    ) {
+      const heading = Decoration.line({
+        attributes: {
+          class: className,
+        },
+      });
+      lineDecorations.push(heading.range(pos));
     }
   },
   {
@@ -107,8 +150,14 @@ const baseTheme = EditorView.baseTheme({
     width: '100%',
     display: 'inline-flex',
     alignItems: 'center',
-    height: '1px',
+    height: '1p x',
     transform: 'translateY(10px)',
     verticalAlign: 'top',
+  },
+  '.cm-front-matter': {},
+  '.cm-front-matter .cmt-heading': {
+    fontSize: '1em',
+    fontWeight: '400',
+    fontStyle: 'italic',
   },
 });

@@ -75,7 +75,12 @@ const fontSizeExtension = fontSizeComp.of(fontSize(16));
 
 // State for debugging.
 let debugState = EditorState.create({
-  doc: `# Welcome to WordMark
+  doc: `---
+layout: post
+categories: [intro, admin]
+---
+
+# Welcome to WordMark
 
 ## Introduction
 

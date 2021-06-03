@@ -15,7 +15,7 @@ export function codeblock(): Extension {
   return [codeblockDecorationPlugin, baseTheme];
 }
 
-const codeblockRE = /^`{3}([a-zA-Z]*)/;
+const codeblockRE = /^[`~]{3}([a-zA-Z]*)/;
 
 const codeblockDecorationPlugin = ViewPlugin.fromClass(
   class {
@@ -32,7 +32,13 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
       let indicatorDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
         // Start from 0 because we want to make sure the ``` always starts from top to bottom to avoid a case when the ending indicator becomes the starting one.
-        this.getDecorationsFor(0, to, decorations, lineDecorations, indicatorDecorations);
+        this.getDecorationsFor(
+          0,
+          to,
+          decorations,
+          lineDecorations,
+          indicatorDecorations,
+        );
       }
       this.decorations = Decoration.set(decorations, true);
 
@@ -47,7 +53,11 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
-    addLineDecoration(className: string, lineDecorations: Range<Decoration>[], pos: number) {
+    addLineDecoration(
+      className: string,
+      lineDecorations: Range<Decoration>[],
+      pos: number,
+    ) {
       const heading = Decoration.line({
         attributes: {
           class: className,
@@ -66,7 +76,11 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
       let { doc } = this.view.state;
       let insideCodeblock = false;
 
-      for (let pos = from, iter = doc.iterRange(from, to); !iter.next().done; ) {
+      for (
+        let pos = from, iter = doc.iterRange(from, to);
+        !iter.next().done;
+
+      ) {
         if (!iter.lineBreak) {
           let m = iter.value.match(codeblockRE);
           if (m && !insideCodeblock) {
