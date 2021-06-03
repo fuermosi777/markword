@@ -224,20 +224,18 @@ function ClientToggleHeading(heading: number) {
     view.dispatch(
       view.state.changeByRange((range) => {
         let line = view.state.doc.lineAt(range.from);
-        if (headingRE.test(line.text)) {
-          // Remove #
-          let removed = line.text.replace(headingRE, '');
-          return {
-            changes: [{ from: line.from, to: line.to, insert: removed }],
-            range: EditorSelection.range(range.from, range.to),
-          };
-        } else {
-          let added = Array(heading + 1).join('#') + ' ';
-          return {
-            changes: [{ from: line.from, insert: added }],
-            range: EditorSelection.range(range.from, range.to),
-          };
-        }
+        let changes = [];
+
+        // First remove #s is there are.
+        let removed = line.text.replace(headingRE, '');
+        changes.push({ from: line.from, to: line.to, insert: removed });
+
+        let added = Array(heading + 1).join('#') + ' ';
+        changes.push({ from: line.from, insert: added });
+        return {
+          changes,
+          range: EditorSelection.range(range.from, range.to),
+        };
       }),
     );
   }
