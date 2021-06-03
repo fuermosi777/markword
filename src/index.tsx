@@ -1,6 +1,11 @@
 import './styles.less';
 
-import { EditorState, Extension, Compartment } from '@codemirror/state';
+import {
+  EditorState,
+  Extension,
+  Compartment,
+  EditorSelection,
+} from '@codemirror/state';
 import { EditorView, highlightActiveLine, keymap } from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
@@ -11,7 +16,7 @@ import {
   classHighlightStyle,
 } from '@codemirror/highlight';
 import { phraseEmphasis } from './phraseEmphasis';
-import { heading } from './heading';
+import { heading, headingRE } from './heading';
 import { wordmarkTheme } from './wordmarkTheme';
 import { link } from './link';
 import { listTask } from './listTask';
@@ -214,10 +219,56 @@ function ClientToggleActiveLine(on: boolean) {
   }
 }
 
+function ClientToggleHeading(heading: number) {
+  if (view) {
+    view.dispatch(
+      view.state.changeByRange((range) => {
+        let line = view.state.doc.lineAt(range.from);
+        if (headingRE.test(line.text)) {
+          // Remove #
+          let removed = line.text.replace(headingRE, '');
+          return {
+            changes: [{ from: line.from, to: line.to, insert: removed }],
+            range: EditorSelection.range(range.from, range.to),
+          };
+        } else {
+          let added = Array(heading + 1).join('#') + ' ';
+          return {
+            changes: [{ from: line.from, insert: added }],
+            range: EditorSelection.range(range.from, range.to),
+          };
+        }
+      }),
+    );
+  }
+}
+
+// TODO: add remove inline format.
+function ClientToggleInlineFormat(indicators: string) {
+  if (view) {
+    view.dispatch(
+      view.state.changeByRange((range) => {
+        return {
+          changes: [
+            { from: range.from, insert: indicators },
+            { from: range.to, insert: indicators },
+          ],
+          range: EditorSelection.range(
+            range.from,
+            range.to + indicators.length * 2,
+          ),
+        };
+      }),
+    );
+  }
+}
+
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
+_global.ClientToggleHeading = ClientToggleHeading;
+_global.ClientToggleInlineFormat = ClientToggleInlineFormat;
 
 // @ts-ignore
 const webkit = window.webkit;

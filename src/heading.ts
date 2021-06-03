@@ -14,7 +14,7 @@ export function heading(): Extension {
   return [headingDecorationPlugin, baseTheme];
 }
 
-const headingRE = /^#{1,6}\s{1}/;
+export const headingRE = /^#{1,6}\s{1}/;
 const MaxHeadingLevel = 6;
 
 // The plugin reads all lines and adds heading indicators widget (#) and line decorations.
