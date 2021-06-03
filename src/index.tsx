@@ -79,7 +79,7 @@ let debugState = EditorState.create({
 
 ## Introduction
 
-WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor for macOS. It supports <http://google.com> links, and \`inline codes\`.
+WordMark is a **WYSIWYG** and _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor for macOS. It ~~doesn't~~ supports <http://google.com> links, and \`inline codes\`.
 
 ## Features
 

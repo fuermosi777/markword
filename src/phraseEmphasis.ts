@@ -21,6 +21,7 @@ const emphasisRE = {
   bold: [/\*\*([^\*]+?)\*\*(?!\*)/g, /__([^_]+?)__(?!_)/g],
   italic: [/\*([^\*]+?)\*(?!\*)/g, /_([^_]+?)_(?!_)/g],
   inlineCode: [/`([^`]+?)`(?!`)/g],
+  strikeThru: [/~~([^~]+?)~~(?!~)/g],
 };
 
 const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
@@ -144,6 +145,30 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
           pos += cursor.value.length;
         }
       }
+
+      for (const r of emphasisRE.strikeThru) {
+        for (
+          let pos = from, cursor = doc.iterRange(from, to), m;
+          !cursor.next().done;
+
+        ) {
+          if (!cursor.lineBreak) {
+            while ((m = r.exec(cursor.value))) {
+              // An edge case.
+              if (m.input[m.index - 1] === '~') continue;
+              // No all whitespaces.
+              if (m[1].trim().length === 0) continue;
+              let deco = Decoration.replace({
+                widget: new StrikeThruWidget(m[0], m[1]),
+              });
+              decorations.push(
+                deco.range(pos + m.index, pos + m.index + m[0].length),
+              );
+            }
+          }
+          pos += cursor.value.length;
+        }
+      }
     }
   },
   {
@@ -208,6 +233,25 @@ class InlineCodeWidget extends WidgetType {
   }
 }
 
+class StrikeThruWidget extends WidgetType {
+  constructor(readonly rawValue: string, readonly visibleValue: string) {
+    super();
+  }
+  eq(other: StrikeThruWidget) {
+    return this.rawValue === other.rawValue;
+  }
+  toDOM() {
+    let span = document.createElement('span');
+    span.textContent = this.visibleValue;
+    span.classList.add('cm-strike-through');
+    return span;
+  }
+
+  ignoreEvent() {
+    return false;
+  }
+}
+
 const baseTheme = EditorView.baseTheme({
   '.cm-bold': {
     fontWeight: 600,
@@ -218,5 +262,8 @@ const baseTheme = EditorView.baseTheme({
   '.cm-inline-code': {
     ...codeFontFamily,
     fontSize: `${13 / 16}em`,
+  },
+  '.cm-strike-through': {
+    textDecoration: 'line-through',
   },
 });
