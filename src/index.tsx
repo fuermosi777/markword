@@ -48,6 +48,7 @@ const extensions = [
   defaultHighlightStyle,
   classHighlightStyle,
   highlightActiveLine(),
+  EditorView.contentAttributes.of({ spellcheck: 'true' }),
 
   listTask(),
   phraseEmphasis(),
