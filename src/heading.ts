@@ -114,11 +114,13 @@ class HeaderIndicatorWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
+  // For headings created by horizontal line below.
   '.cmt-heading': {
     textDecoration: 'none',
     fontWeight: 500,
     fontSize: `${24 / 16}em`,
   },
+  // For headings starting with #
   '.cm-h1 *': { fontSize: `${28 / 16}em` },
   '.cm-h2 *': { fontSize: `${24 / 16}em` },
   '.cm-h3 *': { fontSize: `${18 / 16}em` },
