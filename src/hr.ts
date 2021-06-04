@@ -93,7 +93,7 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
             decorations.push(hrDeco.range(pos, pos + m[0].length));
           }
 
-          if (pos > 0 && iter.value === '---') {
+          if (pos > 0 && iter.value === '---' && insideFrontMatter) {
             this.addFrontMatterLineDecoration(
               'cm-front-matter-end',
               decorations,
@@ -150,7 +150,7 @@ const baseTheme = EditorView.baseTheme({
     width: '100%',
     display: 'inline-flex',
     alignItems: 'center',
-    height: '1p x',
+    height: '1px',
     transform: 'translateY(10px)',
     verticalAlign: 'top',
   },
