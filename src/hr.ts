@@ -136,7 +136,10 @@ class HrIndicatorWidget extends WidgetType {
 
   toDOM() {
     let span = document.createElement('span');
-    span.className = 'cm-hr';
+    span.className = 'cm-hr-wrapper';
+    let hr = document.createElement('span');
+    hr.className = 'cm-hr';
+    span.appendChild(hr);
     return span;
   }
 
@@ -146,13 +149,15 @@ class HrIndicatorWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  '.cm-hr': {
+  '.cm-hr-wrapper': {
     width: '100%',
     display: 'inline-flex',
     alignItems: 'center',
+    height: '1.4em', // Line height 23.5px / 16px.
+  },
+  '.cm-hr': {
+    width: '100%',
     height: '1px',
-    transform: 'translateY(10px)',
-    verticalAlign: 'top',
   },
   '.cm-front-matter': {},
   '.cm-front-matter .cmt-heading': {

@@ -170,6 +170,8 @@ const baseTheme = EditorView.baseTheme({
     verticalAlign: 'middle',
     display: 'inline-flex',
     justifyContent: 'center',
+    height: '1.4em', // Line height 23.5px / 16px.
+    alignItems: 'center',
   },
   '.cm-bullet': {
     width: '5px',

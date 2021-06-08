@@ -14,6 +14,12 @@ const defaultTheme = EditorView.theme(
     '&.cm-wrap': {
       backgroundColor: 'white',
     },
+    '.cm-cursor': {
+      borderColor: '#007AFF',
+    },
+    '&.cm-focused .cm-selectionBackground': {
+      background: 'rgba(0,122,255, 0.3)',
+    },
     '.cm-content': { caretColor: '#188FE9' },
     '.cm-line': { color: '#1E1E1E' },
     '.cm-link': { color: '#007AFF' },
@@ -81,6 +87,12 @@ const darkTheme = EditorView.theme(
   {
     '&.cm-wrap': {
       backgroundColor: '#1E1E1E',
+    },
+    '.cm-cursor': {
+      borderColor: '#0B84FF',
+    },
+    '&.cm-focused .cm-selectionBackground': {
+      background: 'rgba(0,122,255, 0.3)',
     },
     '.cm-content': { caretColor: '#188FE9' },
     '.cm-line': { color: '#E3E3E3' },
