@@ -6,7 +6,12 @@ import {
   Compartment,
   EditorSelection,
 } from '@codemirror/state';
-import { EditorView, highlightActiveLine, keymap } from '@codemirror/view';
+import {
+  drawSelection,
+  EditorView,
+  highlightActiveLine,
+  keymap,
+} from '@codemirror/view';
 import { standardKeymap } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
 import { markdown } from '@codemirror/lang-markdown';
@@ -49,6 +54,7 @@ const extensions = [
   classHighlightStyle,
   highlightActiveLine(),
   EditorView.contentAttributes.of({ spellcheck: 'true' }),
+  drawSelection(),
 
   listTask(),
   phraseEmphasis(),
