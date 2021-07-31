@@ -17,8 +17,8 @@ import { insertNewlineContinueList, spaceTabBinding } from './commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { javascriptLanguage } from '@codemirror/lang-javascript';
 import {
-  defaultHighlightStyle,
   classHighlightStyle,
+  defaultHighlightStyle,
 } from '@codemirror/highlight';
 import { phraseEmphasis } from './phraseEmphasis';
 import { heading, headingRE } from './heading';
@@ -50,7 +50,7 @@ const extensions = [
     // Disable markdown keymaps.
     addKeymap: false,
   }),
-  defaultHighlightStyle,
+  // defaultHighlightStyle <- temporarily hide this because it's causing a problem,
   classHighlightStyle,
   highlightActiveLine(),
   EditorView.contentAttributes.of({ spellcheck: 'true' }),

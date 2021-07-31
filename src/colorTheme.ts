@@ -76,9 +76,10 @@ const defaultTheme = EditorView.theme(
     '.cmt-punctuation': {
       color: '#aaaaaa',
     },
-    '.cm-front-matter-start *, .cm-front-matter-end *': {
-      color: '#007AFF',
-    },
+    '.cm-front-matter-start, .cm-front-matter-start *, .cm-front-matter-end *':
+      {
+        color: '#007AFF',
+      },
   },
   { dark: false },
 );
@@ -150,9 +151,10 @@ const darkTheme = EditorView.theme(
     '.cmt-punctuation': {
       color: '#aaaaaa',
     },
-    '.cm-front-matter-start *, .cm-front-matter-end *': {
-      color: '#0B84FF',
-    },
+    '.cm-front-matter-start, .cm-front-matter-start *, .cm-front-matter-end *':
+      {
+        color: '#0B84FF',
+      },
   },
   { dark: true },
 );

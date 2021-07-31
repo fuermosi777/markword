@@ -8,13 +8,13 @@
     "build": "webpack"
   },
   "dependencies": {
-    "@codemirror/commands": "^0.18.0",
-    "@codemirror/highlight": "^0.18.3",
+    "@codemirror/commands": "^0.18.3",
+    "@codemirror/highlight": "^0.18.4",
     "@codemirror/history": "^0.18.1",
     "@codemirror/lang-javascript": "^0.18.0",
-    "@codemirror/lang-markdown": "^0.18.0",
-    "@codemirror/state": "^0.18.0",
-    "@codemirror/view": "^0.18.13"
+    "@codemirror/lang-markdown": "^0.18.4",
+    "@codemirror/state": "^0.18.7",
+    "@codemirror/view": "^0.18.19"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^8.0.0",
