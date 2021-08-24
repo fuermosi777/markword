@@ -51,7 +51,7 @@ const imageDecorationPlugin = ViewPlugin.fromClass(
     }
 
     update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet || update.viewportChanged) {
+      if (update.viewportChanged) {
         this.recompute(update);
       }
     }

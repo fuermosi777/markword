@@ -50,7 +50,7 @@ const extensions = [
     // Disable markdown keymaps.
     addKeymap: false,
   }),
-  // defaultHighlightStyle <- temporarily hide this because it's causing a problem,
+  defaultHighlightStyle, //<- temporarily hide this because it's causing a problem,
   classHighlightStyle,
   highlightActiveLine(),
   EditorView.contentAttributes.of({ spellcheck: 'true' }),
