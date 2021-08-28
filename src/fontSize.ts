@@ -3,7 +3,7 @@ import { EditorView } from '@codemirror/view';
 
 export function fontSize(value: number): Extension {
   return EditorView.theme({
-    '&.cm-wrap': {
+    '&.cm-editor': {
       fontSize: `${value}px`,
     },
   });
