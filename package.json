@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "webpack && webpack serve --color --mode=development",
-    "build": "webpack"
+    "build": "webpack",
+    "move:ios": "cp ./dist/main.bundle.js /Users/hao/workspace/WordMark/WordMark/main.bundle.js"
   },
   "dependencies": {
     "@codemirror/commands": "^0.19.1",

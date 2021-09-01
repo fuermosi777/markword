@@ -9,7 +9,6 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { codeFontFamily } from './theme';
 import { isCursorInside } from './utils';
 
 export function hr(): Extension {

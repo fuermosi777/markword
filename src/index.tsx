@@ -273,12 +273,30 @@ function ClientToggleInlineFormat(indicators: string) {
   }
 }
 
+// For example, insert "**" and move cursor inbetween two *.
+function ClientInsert(text: string, offset = 0) {
+  if (view) {
+    view.dispatch(
+      view.state.changeByRange((range) => {
+        return {
+          changes: [{ from: range.from, insert: text }],
+          range: EditorSelection.range(
+            range.from + text.length - offset,
+            range.from + text.length - offset,
+          ),
+        };
+      }),
+    );
+  }
+}
+
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
 _global.ClientToggleHeading = ClientToggleHeading;
 _global.ClientToggleInlineFormat = ClientToggleInlineFormat;
+_global.ClientInsert = ClientInsert;
 
 // @ts-ignore
 const webkit = window.webkit;
