@@ -18,8 +18,8 @@ export function phraseEmphasis(): Extension {
 }
 
 const emphasisRE = {
-  bold: [/\*\*([^\*\s]+?)\*\*(?!\*)/g, /__([^_\s]+?)__(?!_)/g],
-  italic: [/\*([^\*\s]+?)\*(?!\*)/g, /_([^_\s]+?)_(?!_)/g],
+  bold: [/\*\*([^\*]+?)\*\*(?!\*)/g, /__([^_]+?)__(?!_)/g],
+  italic: [/(?:^|[^\*])\*([^\*]+?)\*(?!\*)/g, /(?:^|[^_])_([^_]+?)_(?!_)/g],
   inlineCode: [/`([^`]+?)`(?!`)/g],
   strikeThru: [/~~([^~]+?)~~(?!~)/g],
 };
@@ -105,17 +105,18 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
         ) {
           if (!cursor.lineBreak) {
             while ((m = r.exec(cursor.value))) {
-              // An edge case.
-              if (m.input[m.index - 1] === '_' || m.input[m.index - 1] === '*')
-                continue;
-              // No all whitespaces.
-              if (m[1].trim().length === 0) continue;
+              let rawValue = m[0];
+              let hasLeadingSpace = false;
+              // rawValue could be either "*test*"" or " *test*" (start with a space)
+              if (rawValue.length && rawValue[0] === ' ') {
+                rawValue = rawValue.trim();
+                hasLeadingSpace = true;
+              }
               let deco = Decoration.replace({
-                widget: new ItalicWidget(m[0], m[1]),
+                widget: new ItalicWidget(rawValue, m[1]),
               });
-              decorations.push(
-                deco.range(pos + m.index, pos + m.index + m[0].length),
-              );
+              let start = pos + m.index + (hasLeadingSpace ? 1 : 0);
+              decorations.push(deco.range(start, start + rawValue.length));
             }
           }
           pos += cursor.value.length;
