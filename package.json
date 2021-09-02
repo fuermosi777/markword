@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "webpack && webpack serve --color --mode=development",
-    "page": "cp index.html ./docs/index.html && cp ./dist/main.bundle.js ./docs",
+    "page": "cp ./dist/main.bundle.js ./docs",
     "build": "webpack",
     "move:ios": "cp ./dist/main.bundle.js /Users/hao/workspace/WordMark/WordMark/main.bundle.js",
     "move:macos": "cp ./dist/main.bundle.js /Users/hao/workspace/WordMark-macos/WordMark/CM/main.bundle.js"
