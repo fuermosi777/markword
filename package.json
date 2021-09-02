@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack && webpack serve --color --mode=development",
     "build": "webpack",
-    "move:ios": "cp ./dist/main.bundle.js /Users/hao/workspace/WordMark/WordMark/main.bundle.js"
+    "move:ios": "cp ./dist/main.bundle.js /Users/hao/workspace/WordMark/WordMark/main.bundle.js",
+    "move:macos": "cp ./dist/main.bundle.js /Users/hao/workspace/WordMark-macos/WordMark/CM/main.bundle.js"
   },
   "dependencies": {
     "@codemirror/commands": "^0.19.1",
