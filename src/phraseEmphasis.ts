@@ -18,8 +18,8 @@ export function phraseEmphasis(): Extension {
 }
 
 const emphasisRE = {
-  bold: [/\*\*([^\*]+?)\*\*(?!\*)/g, /__([^_]+?)__(?!_)/g],
-  italic: [/\*([^\*]+?)\*(?!\*)/g, /_([^_]+?)_(?!_)/g],
+  bold: [/\*\*([^\*\s]+?)\*\*(?!\*)/g, /__([^_\s]+?)__(?!_)/g],
+  italic: [/\*([^\*\s]+?)\*(?!\*)/g, /_([^_\s]+?)_(?!_)/g],
   inlineCode: [/`([^`]+?)`(?!`)/g],
   strikeThru: [/~~([^~]+?)~~(?!~)/g],
 };
@@ -254,7 +254,7 @@ class StrikeThruWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   '.cm-bold': {
-    fontWeight: 600,
+    fontWeight: 'bold',
   },
   '.cm-italic': {
     fontStyle: 'italic',
