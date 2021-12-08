@@ -146,6 +146,7 @@ class CodeBlockIndicatorWidget extends WidgetType {
 const baseTheme = EditorView.baseTheme({
   '.cm-codeblock': {
     paddingLeft: '10px',
+    fontSize: '0.9em',
     ...codeFontFamily,
   },
   '.cm-codeblock-start': {

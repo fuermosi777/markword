@@ -52,7 +52,6 @@ const extensions = [
   }),
   defaultHighlightStyle,
   classHighlightStyle,
-  highlightActiveLine(),
   EditorView.contentAttributes.of({ spellcheck: 'true' }),
   drawSelection(),
 
@@ -64,6 +63,9 @@ const extensions = [
   blockquote(),
   codeblock(),
   hr(),
+
+  // This must be after hr as otherwise it will alter the class names.
+  highlightActiveLine(),
 
   webkitPlugins(),
 ];
