@@ -206,6 +206,15 @@ function ClientInitEditor(doc: string) {
   });
 }
 
+/// Update the content with new base64 encoded content.
+function ClientUpdateContent(doc: string) {
+  if (view) {
+    view.dispatch({
+      changes: { from: 0, insert: decodeBase64(doc) },
+    });
+  }
+}
+
 /// Updates the theme for the editor.
 function ClientUpdateTheme(name: ThemeColor) {
   if (view) {
@@ -294,6 +303,7 @@ function ClientInsert(text: string, offset = 0) {
 
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
+_global.ClientUpdateContent = ClientUpdateContent;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
 _global.ClientToggleHeading = ClientToggleHeading;
