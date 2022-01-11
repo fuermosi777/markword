@@ -13,6 +13,9 @@ const baseTheme = EditorView.theme({
   '&.cm-content': {
     lineHeight: 2,
   },
-  '.cm-line': { ...regularFontFamily, position: 'relative' },
+  '.cm-line': {
+    ...regularFontFamily,
+    position: 'relative',
+  },
   '&.cm-focused': { outline: 'none' },
 });

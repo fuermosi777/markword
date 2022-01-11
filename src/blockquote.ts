@@ -3,17 +3,19 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
+  PluginField,
   Range,
   ViewPlugin,
   ViewUpdate,
+  WidgetType,
 } from '@codemirror/view';
-import { EmptyWidget, isCursorInside } from './utils';
+import { isCursorInside } from './utils';
 
 export function blockquote(): Extension {
   return [blockquoteDecorationPlugin, baseTheme];
 }
 
-const blockquoteRE = /^>+\s*/;
+const blockquoteRE = /^>\s?/;
 
 const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   class {
@@ -25,21 +27,22 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
 
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
-      let lineDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
-        this.getDecorationsFor(from, to, decorations, lineDecorations);
+        this.getDecorationsFor(from, to, decorations);
       }
       this.decorations = Decoration.set(decorations, true);
 
       this.decorations = this.decorations.update({
         filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, /* inclusive=*/ true)) {
+          if (
+            update &&
+            isCursorInside(update, from, to, /* inclusive=*/ false)
+          ) {
             return false;
           }
 
           return true;
         },
-        add: lineDecorations,
       });
     }
 
@@ -53,35 +56,26 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
       from: number,
       to: number,
       decorations: Range<Decoration>[],
-      lineDecorations: Range<Decoration>[],
     ) {
       let { doc } = this.view.state;
       let insideBlockquote = false;
       let isLastLineBreak = false;
 
-      for (let pos = from, cursor = doc.iterRange(from, to); !cursor.next().done; ) {
+      for (
+        let pos = from, cursor = doc.iterRange(from, to);
+        !cursor.next().done;
+
+      ) {
         if (!cursor.lineBreak) {
           let m = cursor.value.match(blockquoteRE);
           if (m) {
             insideBlockquote = true;
             let deco = Decoration.replace({
-              widget: new EmptyWidget(),
+              widget: new BlockquoteIndicatorWidget(),
               inclusive: true,
             });
             decorations.push(deco.range(pos, pos + m[0].length));
-            const bq = Decoration.line({
-              attributes: {
-                class: 'cm-blockquote',
-              },
-            });
-            lineDecorations.push(bq.range(pos));
           } else if (insideBlockquote) {
-            const bq = Decoration.line({
-              attributes: {
-                class: 'cm-blockquote',
-              },
-            });
-            lineDecorations.push(bq.range(pos));
           }
           isLastLineBreak = false;
         } else {
@@ -96,13 +90,37 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
+    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 
+class BlockquoteIndicatorWidget extends WidgetType {
+  constructor() {
+    super();
+  }
+
+  eq(other: BlockquoteIndicatorWidget) {
+    return true;
+  }
+
+  toDOM() {
+    let span = document.createElement('span');
+    span.className = `cm-blockquote-indicator`;
+
+    return span;
+  }
+
+  ignoreEvent(): boolean {
+    return false;
+  }
+}
+
 const baseTheme = EditorView.baseTheme({
-  '.cm-blockquote': {
-    backgroundColor: '#F9F9F9',
-    paddingLeft: '10px',
-    borderLeft: '4px solid gray',
+  '.cm-blockquote-indicator': {
+    width: '3px',
+    height: '1.6em',
+    display: 'inline-block',
+    marginRight: '10px',
+    verticalAlign: 'middle',
   },
 });

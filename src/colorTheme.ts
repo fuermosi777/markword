@@ -24,8 +24,8 @@ const defaultTheme = EditorView.theme(
     '.cm-h-indicator': { color: '#CCC' },
     '.cm-line': { color: '#1E1E1E' },
     '.cm-link': { color: '#007AFF' },
-    '.cm-blockquote': {
-      backgroundColor: '#F9F9F9',
+    '.cm-blockquote-indicator': {
+      backgroundColor: '#007AFF',
     },
     '.cm-codeblock': {
       backgroundColor: '#F9F9F9',
@@ -100,8 +100,8 @@ const darkTheme = EditorView.theme(
     '.cm-h-indicator': { color: '#505050' },
     '.cm-line': { color: '#E3E3E3' },
     '.cm-link': { color: '#0B84FF' },
-    '.cm-blockquote': {
-      backgroundColor: '#2d2d2d',
+    '.cm-blockquote-indicator': {
+      backgroundColor: '#0B84FF',
     },
     '.cm-codeblock': {
       backgroundColor: '#2d2d2d',

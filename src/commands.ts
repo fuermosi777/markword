@@ -25,8 +25,8 @@ const insertTab: StateCommand = ({ state, dispatch }) => {
 // Gets order of the ordered list. E.g. "1" from "1. xxx".
 const olistOrderRE = /^(\s*)(\d+)(?=[.)])/;
 
-/// TODO: number list.
-/// Get the line from current selection, use RE to check if the current line is a list. If it is a list, then fetch the list indicator and append to a new line.
+// Get the line from current selection, use RE to check if the current line is a list.
+// If it is a list, then fetch the list indicator and append to a new line.
 const insertListTask: StateCommand = ({ state, dispatch }) => {
   let dont = null,
     changes = state.changeByRange((range) => {

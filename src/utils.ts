@@ -82,7 +82,7 @@ class EmptyWidget extends WidgetType {
     super();
   }
 
-  eq(other: EmptyWidget) {
+  eq(_: EmptyWidget) {
     return true;
   }
 
