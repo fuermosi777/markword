@@ -8,7 +8,8 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { isCursorInsideLine } from './utils';
+
+const hashSvg = require('./hash.svg') as string;
 
 export function heading(): Extension {
   return [headingDecorationPlugin, baseTheme];
@@ -66,15 +67,11 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
             let level = (m[0].match(/#/g) || []).length;
             level = Math.min(level, MaxHeadingLevel);
 
-            // If the cursor is inside the heading line, don't draw indicator widget.
-            let lineLength = iter.value.length;
-            if (!isCursorInsideLine(state, pos, pos + lineLength)) {
-              let deco = Decoration.replace({
-                widget: new HeaderIndicatorWidget(level, m[0]),
-                inclusive: true,
-              });
-              decorations.push(deco.range(pos, pos + m[0].length));
-            }
+            let deco = Decoration.replace({
+              widget: new HeaderIndicatorWidget(level, m[0]),
+              inclusive: true,
+            });
+            decorations.push(deco.range(pos, pos + m[0].length));
 
             const heading = Decoration.line({
               attributes: {
@@ -96,6 +93,7 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
 class HeaderIndicatorWidget extends WidgetType {
   constructor(readonly level: number, readonly rawValue: string) {
     super();
+    this.level = Math.min(level, 3);
   }
 
   eq(other: HeaderIndicatorWidget) {
@@ -104,7 +102,8 @@ class HeaderIndicatorWidget extends WidgetType {
 
   toDOM() {
     let span = document.createElement('span');
-    span.className = `cm-h${this.level}-indicator`;
+    span.className = `cm-h-indicator cm-h${this.level}-indicator`;
+    span.innerHTML = hashSvg;
     return span;
   }
 
@@ -127,4 +126,19 @@ const baseTheme = EditorView.baseTheme({
   '.cm-h4 *': { fontSize: `${16 / 16}em` },
   '.cm-h5 *': { fontSize: `${14 / 16}em` },
   '.cm-h6 *': { fontSize: `${14 / 16}em` },
+  // For indicators.
+  '.cm-h-indicator': {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'end',
+    width: '50px',
+    position: 'absolute',
+    top: '0',
+    right: '100%',
+    bottom: '0',
+  },
+  '.cm-h-indicator svg': {
+    width: '60%',
+    height: '60%',
+  },
 });

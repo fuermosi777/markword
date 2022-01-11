@@ -125,6 +125,12 @@ function fibonacci(n) {
 > Support
 >
 Multi line
+
+### Heading 3 is possible 
+
+#### Heading 4 
+
+###### Heading 6 Is also possible
 `,
   extensions: makeExtensions(),
 });

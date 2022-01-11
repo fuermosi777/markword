@@ -38,8 +38,8 @@ module.exports = {
         ],
       },
       {
-        test: /\.ttf$/,
-        use: ['file-loader'],
+        test: /\.svg$/,
+        use: ['svg-inline-loader'],
       },
     ],
   },
