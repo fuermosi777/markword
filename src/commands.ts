@@ -8,6 +8,7 @@ import {
   EditorSelection,
 } from '@codemirror/state';
 import { KeyBinding } from '@codemirror/view';
+import { blockquoteRE } from './blockquote';
 import { olistRE, taskRE, ulistRE } from './listTask';
 
 const insertTab: StateCommand = ({ state, dispatch }) => {
@@ -27,7 +28,7 @@ const olistOrderRE = /^(\s*)(\d+)(?=[.)])/;
 
 // Get the line from current selection, use RE to check if the current line is a list.
 // If it is a list, then fetch the list indicator and append to a new line.
-const insertListTask: StateCommand = ({ state, dispatch }) => {
+const continueWithLastLine: StateCommand = ({ state, dispatch }) => {
   let dont = null,
     changes = state.changeByRange((range) => {
       if (range.empty && markdownLanguage.isActiveAt(state, range.from)) {
@@ -36,7 +37,8 @@ const insertListTask: StateCommand = ({ state, dispatch }) => {
         let m =
           line.text.match(taskRE) ||
           line.text.match(ulistRE) ||
-          line.text.match(olistRE);
+          line.text.match(olistRE) ||
+          line.text.match(blockquoteRE);
         if (m) {
           let from = range.from;
           let changes: ChangeSpec[] = [];
@@ -99,5 +101,5 @@ const insertListTask: StateCommand = ({ state, dispatch }) => {
 export const spaceTabBinding: KeyBinding = { key: 'Tab', run: insertTab };
 export const insertNewlineContinueList: KeyBinding = {
   key: 'Enter',
-  run: insertListTask,
+  run: continueWithLastLine,
 };

@@ -15,7 +15,7 @@ export function blockquote(): Extension {
   return [blockquoteDecorationPlugin, baseTheme];
 }
 
-const blockquoteRE = /^>\s?/;
+export const blockquoteRE = /^>\s?/;
 
 const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   class {
