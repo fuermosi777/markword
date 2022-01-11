@@ -47,7 +47,7 @@ const defaultTheme = EditorView.theme(
     '.cmt-meta': {
       color: '#007AFF',
     },
-    'cmt-labelName': {
+    '.cmt-labelName': {
       color: '#aaa',
     },
     '.cmt-url': {
@@ -123,7 +123,7 @@ const darkTheme = EditorView.theme(
     '.cmt-meta': {
       color: '#0B84FF',
     },
-    'cmt-labelName': {
+    '.cmt-labelName': {
       color: '#aaa',
     },
     '.cmt-url': {
