@@ -118,7 +118,7 @@ class BlockquoteIndicatorWidget extends WidgetType {
 const baseTheme = EditorView.baseTheme({
   '.cm-blockquote-indicator': {
     width: '3px',
-    height: '1.6em',
+    height: '1.7em',
     display: 'inline-block',
     marginRight: '10px',
     verticalAlign: 'middle',

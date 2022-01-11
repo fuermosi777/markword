@@ -130,7 +130,7 @@ const baseTheme = EditorView.baseTheme({
   '.cm-h-indicator': {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'end',
+    justifyContent: 'flex-end',
     width: '50px',
     position: 'absolute',
     top: '0',
