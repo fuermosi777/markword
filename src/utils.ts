@@ -1,6 +1,6 @@
 import { EditorState } from '@codemirror/state';
 import { Text } from '@codemirror/text';
-import { EditorView, ViewUpdate, WidgetType } from '@codemirror/view';
+import { ViewUpdate, WidgetType } from '@codemirror/view';
 
 /**
  * Check if cursor is inside the widget.
@@ -16,7 +16,6 @@ function isCursorInside(
   inclusive = true,
 ): boolean {
   let latestTr = update.transactions[update.transactions.length - 1];
-
   if (latestTr && latestTr.selection) {
     if (
       inclusive &&
@@ -96,4 +95,15 @@ class EmptyWidget extends WidgetType {
   }
 }
 
-export { isCursorInside, isCursorInsideLine, eachLineMatchRe, EmptyWidget };
+interface Position {
+  from: number;
+  to: number;
+}
+
+export {
+  isCursorInside,
+  isCursorInsideLine,
+  eachLineMatchRe,
+  EmptyWidget,
+  Position,
+};

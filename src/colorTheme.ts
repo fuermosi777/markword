@@ -27,6 +27,9 @@ const defaultTheme = EditorView.theme(
     '.cm-blockquote-indicator': {
       backgroundColor: '#007AFF',
     },
+    '.cm-front-matter': {
+      backgroundColor: '#F9F9F9',
+    },
     '.cm-codeblock': {
       backgroundColor: '#F9F9F9',
     },
@@ -79,7 +82,7 @@ const defaultTheme = EditorView.theme(
     },
     '.cm-front-matter-start, .cm-front-matter-start *, .cm-front-matter-end *':
       {
-        color: '#007AFF',
+        color: '#ccc',
       },
   },
   { dark: false },
@@ -103,8 +106,11 @@ const darkTheme = EditorView.theme(
     '.cm-blockquote-indicator': {
       backgroundColor: '#0B84FF',
     },
+    '.cm-front-matter': {
+      backgroundColor: 'rgba(72, 72, 72, 0.4)',
+    },
     '.cm-codeblock': {
-      backgroundColor: '#2d2d2d',
+      backgroundColor: 'rgba(72, 72, 72, 0.4)',
     },
     '.cm-inline-code': {
       backgroundColor: 'rgba(195,195,195,0.15)',
@@ -155,7 +161,7 @@ const darkTheme = EditorView.theme(
     },
     '.cm-front-matter-start, .cm-front-matter-start *, .cm-front-matter-end *':
       {
-        color: '#0B84FF',
+        color: '#5a5858',
       },
   },
   { dark: true },

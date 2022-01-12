@@ -9,7 +9,8 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { isCursorInside } from './utils';
+import { codeFontFamily } from './theme';
+import { isCursorInside, Position } from './utils';
 
 export function hr(): Extension {
   return [hrDecorationPlugin, baseTheme];
@@ -28,19 +29,10 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
     recompute(update?: ViewUpdate) {
       let decorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
-        this.getDecorationsFor(from, to, decorations);
+        this.getDecorationsFor(from, to, decorations, update);
       }
 
       this.decorations = Decoration.set(decorations, true);
-      this.decorations = this.decorations.update({
-        filter: (from, to, value: Decoration) => {
-          if (update && isCursorInside(update, from, to, false)) {
-            return false;
-          }
-
-          return true;
-        },
-      });
     }
 
     update(update: ViewUpdate) {
@@ -53,13 +45,17 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
       from: number,
       to: number,
       decorations: Range<Decoration>[],
+      update?: ViewUpdate,
     ) {
       let { view } = this;
       let { doc } = view.state;
-      let insideFrontMatter = false;
+      let frontMatterPos: Position[] = [];
 
       for (
-        let pos = from, iter = doc.iterRange(from, to);
+        let pos = from,
+          iter = doc.iterRange(from, to),
+          frontMatterFrom = -1,
+          insideFrontMatter = false;
         !iter.next().done;
 
       ) {
@@ -68,18 +64,11 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
           if (pos === 0 && iter.value !== '---') break;
           if (pos === 0 && iter.value === '---') {
             insideFrontMatter = true;
-            this.addFrontMatterLineDecoration(
-              'cm-front-matter-start',
-              decorations,
-              pos,
-            );
+            frontMatterFrom = pos;
+            this.addLineDecoration('cm-front-matter-start', decorations, pos);
           }
           if (insideFrontMatter) {
-            this.addFrontMatterLineDecoration(
-              'cm-front-matter',
-              decorations,
-              pos,
-            );
+            this.addLineDecoration('cm-front-matter', decorations, pos);
           }
 
           // Create horizontal lines.
@@ -93,29 +82,41 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
           }
 
           if (pos > 0 && iter.value === '---' && insideFrontMatter) {
-            this.addFrontMatterLineDecoration(
-              'cm-front-matter-end',
-              decorations,
-              pos,
-            );
             insideFrontMatter = false;
+            frontMatterPos.push({
+              from: frontMatterFrom,
+              to: pos + iter.value.length,
+            });
+            this.addLineDecoration('cm-front-matter-end', decorations, pos);
           }
         }
         pos += iter.value.length;
       }
+
+      for (let fp of frontMatterPos) {
+        let shouldHide = false;
+        if (!update) {
+          shouldHide = true;
+        }
+        if (update && !isCursorInside(update, fp.from, fp.to, true)) {
+          shouldHide = true;
+        }
+        if (shouldHide) {
+          this.addLineDecoration('cm-line-hidden', decorations, fp.from);
+          this.addLineDecoration('cm-line-hidden', decorations, fp.to - 3);
+        }
+      }
     }
 
-    addFrontMatterLineDecoration(
+    addLineDecoration(
       className: string,
-      lineDecorations: Range<Decoration>[],
+      decos: Range<Decoration>[],
       pos: number,
     ) {
       const heading = Decoration.line({
-        attributes: {
-          class: className,
-        },
+        class: className,
       });
-      lineDecorations.push(heading.range(pos));
+      decos.push(heading.range(pos));
     }
   },
   {
@@ -158,10 +159,13 @@ const baseTheme = EditorView.baseTheme({
     width: '100%',
     height: '1px',
   },
-  '.cm-front-matter': {},
+  '.cm-front-matter *': {
+    ...codeFontFamily,
+  },
+  '.cm-line-hidden': {
+    display: 'none',
+  },
   '.cm-front-matter .cmt-heading': {
-    fontSize: '1em',
-    fontWeight: '400',
-    fontStyle: 'italic',
+    fontSize: '0.9em',
   },
 });

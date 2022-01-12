@@ -9,7 +9,7 @@ import {
   WidgetType,
 } from '@codemirror/view';
 import { codeFontFamily } from './theme';
-import { isCursorInsideLine } from './utils';
+import { isCursorInside, Position } from './utils';
 
 export function codeblock(): Extension {
   return [codeblockDecorationPlugin, baseTheme];
@@ -26,36 +26,23 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
     }
 
     recompute(update?: ViewUpdate) {
-      let decorations: Range<Decoration>[] = [];
       let lineDecorations: Range<Decoration>[] = [];
-      // This is for determine whether the cursor is inside the current codeblock, won't be used for actual decoration.
-      let indicatorDecorations: Range<Decoration>[] = [];
       for (let { from, to } of this.view.visibleRanges) {
         // Start from 0 because we want to make sure the ``` always starts from top to bottom to avoid a case when the ending indicator becomes the starting one.
-        this.getDecorationsFor(
-          0,
-          to,
-          decorations,
-          lineDecorations,
-          indicatorDecorations,
-        );
+        this.getDecorationsFor(0, to, lineDecorations, update);
       }
-      this.decorations = Decoration.set(decorations, true);
-
-      this.decorations = this.decorations.update({
-        add: lineDecorations,
-      });
+      this.decorations = Decoration.set(lineDecorations, true);
     }
 
     update(update: ViewUpdate) {
-      if (update.changes.length || update.viewportChanged) {
+      if (update.docChanged || update.selectionSet || update.viewportChanged) {
         this.recompute(update);
       }
     }
 
     addLineDecoration(
       className: string,
-      lineDecorations: Range<Decoration>[],
+      decos: Range<Decoration>[],
       pos: number,
     ) {
       const heading = Decoration.line({
@@ -63,21 +50,23 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
           class: className,
         },
       });
-      lineDecorations.push(heading.range(pos));
+      decos.push(heading.range(pos));
     }
 
     getDecorationsFor(
       from: number,
       to: number,
-      decorations: Range<Decoration>[],
       lineDecorations: Range<Decoration>[],
-      indicatorDecorations: Range<Decoration>[],
+      update?: ViewUpdate,
     ) {
       let { doc } = this.view.state;
-      let insideCodeblock = false;
+      let codePos: Position[] = [];
 
       for (
-        let pos = from, iter = doc.iterRange(from, to);
+        let pos = from,
+          iter = doc.iterRange(from, to),
+          codeFrom = -1,
+          insideCodeblock = false;
         !iter.next().done;
 
       ) {
@@ -86,25 +75,12 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
           if (m && !insideCodeblock) {
             // Start the codeblock.
             insideCodeblock = true;
-            let lineLength = iter.value.length;
-            if (!isCursorInsideLine(this.view.state, pos, pos + lineLength)) {
-              let deco = Decoration.replace({
-                widget: new CodeBlockIndicatorWidget(m[1]),
-                inclusive: true,
-              });
-              decorations.push(deco.range(pos, pos + lineLength));
-            }
+            codeFrom = pos;
             this.addLineDecoration('cm-codeblock-start', lineDecorations, pos);
           } else if (m && insideCodeblock) {
             insideCodeblock = false;
             let lineLength = iter.value.length;
-            if (!isCursorInsideLine(this.view.state, pos, pos + lineLength)) {
-              let deco = Decoration.replace({
-                widget: new CodeBlockIndicatorWidget(m[1]),
-                inclusive: true,
-              });
-              decorations.push(deco.range(pos, pos + lineLength));
-            }
+            codePos.push({ from: codeFrom, to: pos + lineLength });
             this.addLineDecoration('cm-codeblock-end', lineDecorations, pos);
           }
           if (m || insideCodeblock) {
@@ -115,6 +91,21 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
           this.addLineDecoration('cm-codeblock', lineDecorations, pos);
         }
         pos += iter.value.length;
+      }
+
+      for (let cp of codePos) {
+        let shouldHide = false;
+        if (!update) {
+          shouldHide = true;
+        }
+        if (update && !isCursorInside(update, cp.from, cp.to, true)) {
+          shouldHide = true;
+        }
+        if (shouldHide) {
+          this.addLineDecoration('cm-line-hidden', lineDecorations, cp.from);
+          // 3 is the length of ``` or ~~~, to is the end position of the line so we need to minus 3 to get to the starting point of the line.
+          this.addLineDecoration('cm-line-hidden', lineDecorations, cp.to - 3);
+        }
       }
     }
   },
@@ -150,12 +141,12 @@ const baseTheme = EditorView.baseTheme({
     ...codeFontFamily,
   },
   '.cm-codeblock-start': {
-    borderTopLeftRadius: '6px',
-    borderTopRightRadius: '6px',
+    borderTopLeftRadius: '4px',
+    borderTopRightRadius: '4px',
   },
   '.cm-codeblock-end': {
-    borderBottomLeftRadius: '6px',
-    borderBottomRightRadius: '6px',
+    borderBottomLeftRadius: '4px',
+    borderBottomRightRadius: '4px',
   },
   '.cm-codeblock-indicator': {
     color: '#CCC',
