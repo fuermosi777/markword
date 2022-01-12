@@ -28,12 +28,12 @@ import { listTask } from './listTask';
 import { image } from './image';
 import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
-import { hr } from './hr';
 import { webkitPlugins } from './webkit';
 import { defaultColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
 import { hideActiveLine, showActiveLine } from './activeLine';
 import { fontSize } from './fontSize';
+import { frontMatter } from './frontMatter';
 
 const extensions = [
   wordmarkTheme(),
@@ -62,7 +62,7 @@ const extensions = [
   image(),
   blockquote(),
   codeblock(),
-  hr(),
+  frontMatter(),
 
   // This must be after hr as otherwise it will alter the class names.
   highlightActiveLine(),

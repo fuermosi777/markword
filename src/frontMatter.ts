@@ -3,7 +3,6 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
-  PluginField,
   Range,
   ViewPlugin,
   ViewUpdate,
@@ -12,13 +11,14 @@ import {
 import { codeFontFamily } from './theme';
 import { isCursorInside, Position } from './utils';
 
-export function hr(): Extension {
-  return [hrDecorationPlugin, baseTheme];
+export function frontMatter(): Extension {
+  return [frontMatterDecorationPlugin, baseTheme];
 }
 
+const frontMatterRE = /^[-]{3}/;
 const hrRE = /^( ?[-_*]){3,} ?[\t]*$/;
 
-const hrDecorationPlugin = ViewPlugin.fromClass(
+const frontMatterDecorationPlugin = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet = Decoration.none;
 
@@ -31,7 +31,6 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
       for (let { from, to } of this.view.visibleRanges) {
         this.getDecorationsFor(from, to, decorations, update);
       }
-
       this.decorations = Decoration.set(decorations, true);
     }
 
@@ -41,14 +40,26 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
       }
     }
 
+    addLineDecoration(
+      className: string,
+      decos: Range<Decoration>[],
+      pos: number,
+    ) {
+      const heading = Decoration.line({
+        attributes: {
+          class: className,
+        },
+      });
+      decos.push(heading.range(pos));
+    }
+
     getDecorationsFor(
       from: number,
       to: number,
       decorations: Range<Decoration>[],
       update?: ViewUpdate,
     ) {
-      let { view } = this;
-      let { doc } = view.state;
+      let { doc } = this.view.state;
       let frontMatterPos: Position[] = [];
 
       for (
@@ -60,9 +71,8 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
 
       ) {
         if (!iter.lineBreak) {
-          // Handle front matters
-          if (pos === 0 && iter.value !== '---') break;
-          if (pos === 0 && iter.value === '---') {
+          let m = iter.value.match(frontMatterRE);
+          if (pos === 0 && m && !insideFrontMatter) {
             insideFrontMatter = true;
             frontMatterFrom = pos;
             this.addLineDecoration('cm-front-matter-start', decorations, pos);
@@ -71,57 +81,50 @@ const hrDecorationPlugin = ViewPlugin.fromClass(
             this.addLineDecoration('cm-front-matter', decorations, pos);
           }
 
-          // Create horizontal lines.
-          let m = iter.value.match(hrRE);
-          if (m && !insideFrontMatter) {
+          // For horizontal lines.
+          let n = iter.value.match(hrRE);
+          if (n && !insideFrontMatter) {
             const hrDeco = Decoration.replace({
-              widget: new HrIndicatorWidget(m[0]),
+              widget: new HrIndicatorWidget(n[0]),
               inclusive: false,
             });
-            decorations.push(hrDeco.range(pos, pos + m[0].length));
+            decorations.push(hrDeco.range(pos, pos + n[0].length));
           }
 
-          if (pos > 0 && iter.value === '---' && insideFrontMatter) {
+          if (pos > 0 && m && insideFrontMatter) {
             insideFrontMatter = false;
+            let lineLength = iter.value.length;
             frontMatterPos.push({
               from: frontMatterFrom,
-              to: pos + iter.value.length,
+              to: pos + lineLength,
             });
             this.addLineDecoration('cm-front-matter-end', decorations, pos);
+            this.addLineDecoration('cm-front-matter', decorations, pos);
           }
+        } else if (insideFrontMatter) {
+          // For line breaks (empty lines), we also want to add line decoration.
+          this.addLineDecoration('cm-front-matter', decorations, pos);
         }
         pos += iter.value.length;
       }
 
-      for (let fp of frontMatterPos) {
+      for (let cp of frontMatterPos) {
         let shouldHide = false;
         if (!update) {
           shouldHide = true;
         }
-        if (update && !isCursorInside(update, fp.from, fp.to, true)) {
+        if (update && !isCursorInside(update, cp.from, cp.to, true)) {
           shouldHide = true;
         }
         if (shouldHide) {
-          this.addLineDecoration('cm-line-hidden', decorations, fp.from);
-          this.addLineDecoration('cm-line-hidden', decorations, fp.to - 3);
+          this.addLineDecoration('cm-line-hidden', decorations, cp.from);
+          this.addLineDecoration('cm-line-hidden', decorations, cp.to - 3);
         }
       }
-    }
-
-    addLineDecoration(
-      className: string,
-      decos: Range<Decoration>[],
-      pos: number,
-    ) {
-      const heading = Decoration.line({
-        class: className,
-      });
-      decos.push(heading.range(pos));
     }
   },
   {
     decorations: (v) => v.decorations,
-    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 
@@ -159,13 +162,19 @@ const baseTheme = EditorView.baseTheme({
     width: '100%',
     height: '1px',
   },
+
   '.cm-front-matter *': {
     ...codeFontFamily,
   },
-  '.cm-line-hidden': {
-    display: 'none',
-  },
   '.cm-front-matter .cmt-heading': {
     fontSize: '0.9em',
+  },
+  '.cm-front-matter-start': {
+    borderTopLeftRadius: '4px',
+    borderTopRightRadius: '4px',
+  },
+  '.cm-front-matter-end': {
+    borderBottomLeftRadius: '4px',
+    borderBottomRightRadius: '4px',
   },
 });

@@ -151,4 +151,7 @@ const baseTheme = EditorView.baseTheme({
   '.cm-codeblock-indicator': {
     color: '#CCC',
   },
+  '.cm-line-hidden': {
+    display: 'none',
+  },
 });
