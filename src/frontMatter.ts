@@ -169,12 +169,4 @@ const baseTheme = EditorView.baseTheme({
   '.cm-front-matter .cmt-heading': {
     fontSize: '0.9em',
   },
-  '.cm-front-matter-start': {
-    borderTopLeftRadius: '4px',
-    borderTopRightRadius: '4px',
-  },
-  '.cm-front-matter-end': {
-    borderBottomLeftRadius: '4px',
-    borderBottomRightRadius: '4px',
-  },
 });

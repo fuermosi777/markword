@@ -140,14 +140,8 @@ const baseTheme = EditorView.baseTheme({
     fontSize: '0.9em',
     ...codeFontFamily,
   },
-  '.cm-codeblock-start': {
-    borderTopLeftRadius: '4px',
-    borderTopRightRadius: '4px',
-  },
-  '.cm-codeblock-end': {
-    borderBottomLeftRadius: '4px',
-    borderBottomRightRadius: '4px',
-  },
+  '.cm-codeblock-start': {},
+  '.cm-codeblock-end': {},
   '.cm-codeblock-indicator': {
     color: '#CCC',
   },
