@@ -6,7 +6,6 @@ import {
   Range,
   ViewPlugin,
   ViewUpdate,
-  WidgetType,
 } from '@codemirror/view';
 import { codeFontFamily } from './theme';
 import { isCursorInside, Position } from './utils';
