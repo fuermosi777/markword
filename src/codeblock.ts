@@ -114,26 +114,6 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
   },
 );
 
-class CodeBlockIndicatorWidget extends WidgetType {
-  constructor(readonly lang?: string) {
-    super();
-  }
-
-  eq(other: CodeBlockIndicatorWidget) {
-    return other.lang == this.lang;
-  }
-
-  toDOM() {
-    let span = document.createElement('span');
-    span.className = `cm-codeblock-indicator`;
-    return span;
-  }
-
-  ignoreEvent(): boolean {
-    return false;
-  }
-}
-
 const baseTheme = EditorView.baseTheme({
   '.cm-codeblock': {
     paddingLeft: '10px',
@@ -142,9 +122,6 @@ const baseTheme = EditorView.baseTheme({
   },
   '.cm-codeblock-start': {},
   '.cm-codeblock-end': {},
-  '.cm-codeblock-indicator': {
-    color: '#CCC',
-  },
   '.cm-line-hidden': {
     display: 'none',
   },
