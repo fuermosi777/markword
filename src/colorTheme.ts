@@ -28,10 +28,10 @@ const defaultTheme = EditorView.theme(
       backgroundColor: '#007AFF',
     },
     '.cm-front-matter': {
-      backgroundColor: '#F9F9F9',
+      backgroundColor: 'rgba(240, 240, 240, 0.4)',
     },
     '.cm-codeblock': {
-      backgroundColor: '#F9F9F9',
+      backgroundColor: 'rgba(240, 240, 240, 0.4)',
     },
     '.cm-inline-code': {
       backgroundColor: 'rgba(195,195,195,0.3)',

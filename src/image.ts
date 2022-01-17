@@ -3,7 +3,6 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
-  PluginField,
   Range,
   ViewPlugin,
   ViewUpdate,
@@ -90,7 +89,6 @@ const imageDecorationPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
-    provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
 
