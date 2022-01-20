@@ -32,8 +32,9 @@ import { webkitPlugins } from './webkit';
 import { defaultColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
 import { hideActiveLine, showActiveLine } from './activeLine';
-import { fontSize } from './fontSize';
+import { fontSize } from './fontTheme';
 import { frontMatter } from './frontMatter';
+import { fontFamily } from './fontTheme';
 
 const extensions = [
   wordmarkTheme(),
@@ -81,6 +82,9 @@ const activeLineExtension = activeLineComp.of(showActiveLine());
 
 let fontSizeComp = new Compartment();
 const fontSizeExtension = fontSizeComp.of(fontSize(16));
+
+let fontFamilyComp = new Compartment();
+const fontFamilyExtension = fontFamilyComp.of(fontFamily());
 
 // State for debugging.
 let debugState = EditorState.create({
@@ -164,6 +168,7 @@ function makeExtensions() {
     colorThemeExtension,
     activeLineExtension,
     fontSizeExtension,
+    fontFamilyExtension,
   ];
 }
 
@@ -234,6 +239,14 @@ function ClientUpdateFontSize(value: number) {
   if (view) {
     view.dispatch({
       effects: fontSizeComp.reconfigure(fontSize(value)),
+    });
+  }
+}
+
+function ClientUpdateFont(name: string) {
+  if (view) {
+    view.dispatch({
+      effects: fontSizeComp.reconfigure(fontFamily(name)),
     });
   }
 }
@@ -312,6 +325,7 @@ _global.ClientInitEditor = ClientInitEditor;
 _global.ClientUpdateContent = ClientUpdateContent;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
+_global.ClientUpdateFont = ClientUpdateFont;
 _global.ClientToggleHeading = ClientToggleHeading;
 _global.ClientToggleInlineFormat = ClientToggleInlineFormat;
 _global.ClientInsert = ClientInsert;

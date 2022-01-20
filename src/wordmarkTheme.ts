@@ -1,6 +1,5 @@
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { regularFontFamily } from './theme';
 
 export function wordmarkTheme(): Extension {
   return [baseTheme];
@@ -14,7 +13,6 @@ const baseTheme = EditorView.theme({
     lineHeight: 2,
   },
   '.cm-line': {
-    ...regularFontFamily,
     position: 'relative',
   },
   '&.cm-focused': { outline: 'none' },
