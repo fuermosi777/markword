@@ -254,7 +254,7 @@ class StrikeThruWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  '.cm-bold': {
+  '.cm-bold, .cmt-strong': {
     fontWeight: 'bold',
   },
   '.cm-italic': {

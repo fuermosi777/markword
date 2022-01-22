@@ -116,7 +116,7 @@ const baseTheme = EditorView.baseTheme({
   // For headings created by horizontal line below.
   '.cmt-heading': {
     textDecoration: 'none',
-    fontWeight: 500,
+    fontWeight: 'normal',
     fontSize: `${24 / 16}em`,
   },
   // For headings starting with #

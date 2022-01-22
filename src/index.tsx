@@ -246,7 +246,7 @@ function ClientUpdateFontSize(value: number) {
 function ClientUpdateFont(name: string) {
   if (view) {
     view.dispatch({
-      effects: fontSizeComp.reconfigure(fontFamily(name)),
+      effects: fontFamilyComp.reconfigure(fontFamily(name)),
     });
   }
 }
