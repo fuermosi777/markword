@@ -7,7 +7,6 @@ import {
   Range,
   ViewPlugin,
   ViewUpdate,
-  WidgetType,
 } from '@codemirror/view';
 import { EmptyWidget, isCursorInside } from './utils';
 
@@ -101,27 +100,6 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
     provide: PluginField.atomicRanges.from((v) => v.decorations),
   },
 );
-
-class BlockquoteIndicatorWidget extends WidgetType {
-  constructor() {
-    super();
-  }
-
-  eq(other: BlockquoteIndicatorWidget) {
-    return true;
-  }
-
-  toDOM() {
-    let span = document.createElement('span');
-    span.className = `cm-blockquote-indicator`;
-
-    return span;
-  }
-
-  ignoreEvent(): boolean {
-    return false;
-  }
-}
 
 const baseTheme = EditorView.baseTheme({
   '.cm-blockquote': {
