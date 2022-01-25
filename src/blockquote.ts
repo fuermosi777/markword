@@ -9,7 +9,7 @@ import {
   ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
-import { isCursorInside } from './utils';
+import { EmptyWidget, isCursorInside } from './utils';
 
 export function blockquote(): Extension {
   return [blockquoteDecorationPlugin, baseTheme];
@@ -71,11 +71,19 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
           if (m) {
             insideBlockquote = true;
             let deco = Decoration.replace({
-              widget: new BlockquoteIndicatorWidget(),
+              widget: new EmptyWidget(),
               inclusive: true,
             });
             decorations.push(deco.range(pos, pos + m[0].length));
-          } else if (insideBlockquote) {
+          }
+
+          if (insideBlockquote) {
+            let deco = Decoration.line({
+              attributes: {
+                class: 'cm-blockquote',
+              },
+            });
+            decorations.push(deco.range(pos));
           }
           isLastLineBreak = false;
         } else {
@@ -116,11 +124,8 @@ class BlockquoteIndicatorWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  '.cm-blockquote-indicator': {
-    width: '3px',
-    height: '1.7em',
-    display: 'inline-block',
-    marginRight: '10px',
-    verticalAlign: 'middle',
+  '.cm-blockquote': {
+    borderLeft: '3px solid',
+    paddingLeft: '15px',
   },
 });
