@@ -11,7 +11,7 @@ export function darkColor(): Extension {
 
 const defaultTheme = EditorView.theme(
   {
-    '&.cm-wrap': {
+    '&.cm-editor': {
       backgroundColor: 'white',
     },
     '.cm-cursor': {
@@ -90,7 +90,7 @@ const defaultTheme = EditorView.theme(
 
 const darkTheme = EditorView.theme(
   {
-    '&.cm-wrap': {
+    '&.cm-editor': {
       backgroundColor: '#1E1E1E',
     },
     '.cm-cursor': {

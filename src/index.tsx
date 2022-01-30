@@ -137,8 +137,9 @@ function fibonacci(n) {
   extensions: makeExtensions(),
 });
 
-/// Get color theme based on current environment.
-/// If name is given, use it. Otherwise respect the name from URL params.
+// Get color theme based on current environment.
+// If name is given, use it. Otherwise respect the name from URL params.
+// Otherwise respect system appearance.
 function getColor(name?: ThemeColor): Extension {
   if (name) {
     return name === 'Dark' ? darkColor() : defaultColor();
@@ -149,6 +150,7 @@ function getColor(name?: ThemeColor): Extension {
   if (themeFromUrl) {
     return themeFromUrl === 'Dark' ? darkColor() : defaultColor();
   }
+  // If color is not given, and doesn't in url, just respect system.
   let color = defaultColor();
   if (
     window.matchMedia &&
@@ -201,7 +203,7 @@ if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
   });
 }
 
-/// Start a new editor with base64 encoded content.
+// Start a new editor with base64 encoded content.
 function ClientInitEditor(doc: string) {
   if (view) {
     view.destroy();
@@ -215,7 +217,7 @@ function ClientInitEditor(doc: string) {
   });
 }
 
-/// Update the content with new base64 encoded content.
+// Update the content with new base64 encoded content.
 function ClientUpdateContent(doc: string) {
   if (view) {
     view.dispatch({
@@ -224,7 +226,7 @@ function ClientUpdateContent(doc: string) {
   }
 }
 
-/// Updates the theme for the editor.
+// Updates the theme for the editor.
 function ClientUpdateTheme(name: ThemeColor) {
   if (view) {
     view.dispatch({
@@ -321,6 +323,7 @@ function ClientInsert(text: string, offset = 0) {
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
 _global.ClientUpdateContent = ClientUpdateContent;
+_global.ClientUpdateTheme = ClientUpdateTheme;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
 _global.ClientUpdateFont = ClientUpdateFont;
