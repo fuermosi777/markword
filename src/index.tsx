@@ -29,7 +29,7 @@ import { image } from './image';
 import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
 import { webkitPlugins } from './webkit';
-import { defaultColor, darkColor } from './colorTheme';
+import { lightColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
 import { hideActiveLine, showActiveLine } from './activeLine';
 import { fontSize } from './fontTheme';
@@ -71,7 +71,11 @@ const extensions = [
   webkitPlugins(),
 ];
 
-type ThemeColor = 'Default' | 'Dark';
+// If empty string then it's just follow system.
+type ThemeColor = '' | 'Light' | 'Dark';
+
+// A global flag for some functions to know if it should respect system theme or not.
+let useSystemAppearance = true;
 
 //https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983
 let colorThemeComp = new Compartment();
@@ -142,16 +146,21 @@ function fibonacci(n) {
 // Otherwise respect system appearance.
 function getColor(name?: ThemeColor): Extension {
   if (name) {
-    return name === 'Dark' ? darkColor() : defaultColor();
+    // Update this flag so that event listener won't accidentally overwrite the theme.
+    useSystemAppearance = false;
+    return name === 'Dark' ? darkColor() : lightColor();
+  } else {
+    useSystemAppearance = true;
   }
   // Override if forced set in the url params.
+  // This is for testing purpose, shouldn't be used by the client.
   const urlParams = new URLSearchParams(window.location.search);
   const themeFromUrl = urlParams.get('theme') as ThemeColor;
   if (themeFromUrl) {
-    return themeFromUrl === 'Dark' ? darkColor() : defaultColor();
+    return themeFromUrl === 'Dark' ? darkColor() : lightColor();
   }
   // If color is not given, and doesn't in url, just respect system.
-  let color = defaultColor();
+  let color = lightColor();
   if (
     window.matchMedia &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -174,7 +183,7 @@ function makeExtensions() {
 
 // https://stackoverflow.com/a/64752311
 function decodeBase64(base64: string) {
-  const text = atob(base64);
+  const text = window.atob(base64);
   const length = text.length;
   const bytes = new Uint8Array(length);
   for (let i = 0; i < length; i++) {
@@ -189,10 +198,11 @@ let view: EditorView;
 window
   .matchMedia('(prefers-color-scheme: dark)')
   .addEventListener('change', (event) => {
+    if (!useSystemAppearance) return;
     if (event.matches) {
       ClientUpdateTheme('Dark');
     } else {
-      ClientUpdateTheme('Default');
+      ClientUpdateTheme('Light');
     }
   });
 

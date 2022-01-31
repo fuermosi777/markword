@@ -1,15 +1,15 @@
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
-export function defaultColor(): Extension {
-  return [defaultTheme];
+export function lightColor(): Extension {
+  return [lightTheme];
 }
 
 export function darkColor(): Extension {
   return [darkTheme];
 }
 
-const defaultTheme = EditorView.theme(
+const lightTheme = EditorView.theme(
   {
     '&.cm-editor': {
       backgroundColor: 'white',
