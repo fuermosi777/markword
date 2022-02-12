@@ -74,9 +74,6 @@ const extensions = [
 // If empty string then it's just follow system.
 type ThemeColor = '' | 'Light' | 'Dark';
 
-// A global flag for some functions to know if it should respect system theme or not.
-let useSystemAppearance = true;
-
 //https://discuss.codemirror.net/t/codemirror-next-0-18-0/2983
 let colorThemeComp = new Compartment();
 const colorThemeExtension = colorThemeComp.of(getColor());
@@ -146,11 +143,7 @@ function fibonacci(n) {
 // Otherwise respect system appearance.
 function getColor(name?: ThemeColor): Extension {
   if (name) {
-    // Update this flag so that event listener won't accidentally overwrite the theme.
-    useSystemAppearance = false;
     return name === 'Dark' ? darkColor() : lightColor();
-  } else {
-    useSystemAppearance = true;
   }
   // Override if forced set in the url params.
   // This is for testing purpose, shouldn't be used by the client.
@@ -198,7 +191,6 @@ let view: EditorView;
 window
   .matchMedia('(prefers-color-scheme: dark)')
   .addEventListener('change', (event) => {
-    if (!useSystemAppearance) return;
     if (event.matches) {
       ClientUpdateTheme('Dark');
     } else {
@@ -333,7 +325,6 @@ function ClientInsert(text: string, offset = 0) {
 const _global = (window /* browser */ || global) /* node */ as any;
 _global.ClientInitEditor = ClientInitEditor;
 _global.ClientUpdateContent = ClientUpdateContent;
-_global.ClientUpdateTheme = ClientUpdateTheme;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
 _global.ClientUpdateFont = ClientUpdateFont;
