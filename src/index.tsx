@@ -94,11 +94,11 @@ layout: post
 categories: [intro, admin]
 ---
 
-# Welcome to WordMark
+# Welcome to Markword
 
 ## Introduction
 
-WordMark is a **WYSIWYG** *and* _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor for macOS. It ~~doesn't~~ supports <http://google.com> links, and \`inline codes\`.
+Markword is a **WYSIWYG** *and* _lightweight_ [markdown](https://daringfireball.net/projects/markdown/) editor based on [Codemirror 6](https://codemirror.net/6/). It ~~doesn't~~ supports direct <http://google.com> links, and \`inline codes\`.
 
 ## Features
 
