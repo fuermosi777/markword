@@ -32,9 +32,8 @@ import { webkitPlugins } from './webkit';
 import { lightColor, darkColor } from './colorTheme';
 import { history, historyKeymap } from '@codemirror/history';
 import { hideActiveLine, showActiveLine } from './activeLine';
-import { fontSize } from './fontTheme';
+import { fontSize, fontFamily, letterSpacing } from './layoutTheme';
 import { frontMatter } from './frontMatter';
-import { fontFamily } from './fontTheme';
 
 const extensions = [
   wordmarkTheme(),
@@ -83,6 +82,9 @@ const activeLineExtension = activeLineComp.of(showActiveLine());
 
 let fontSizeComp = new Compartment();
 const fontSizeExtension = fontSizeComp.of(fontSize(16));
+
+let letterSpacingComp = new Compartment();
+const letterSpacingExtension = letterSpacingComp.of(letterSpacing(0));
 
 let fontFamilyComp = new Compartment();
 const fontFamilyExtension = fontFamilyComp.of(fontFamily());
@@ -171,6 +173,7 @@ function makeExtensions() {
     activeLineExtension,
     fontSizeExtension,
     fontFamilyExtension,
+    letterSpacingExtension,
   ];
 }
 
@@ -241,6 +244,14 @@ function ClientUpdateFontSize(value: number) {
   if (view) {
     view.dispatch({
       effects: fontSizeComp.reconfigure(fontSize(value)),
+    });
+  }
+}
+
+function ClientUpdateLetterSpacing(value: number) {
+  if (view) {
+    view.dispatch({
+      effects: letterSpacingComp.reconfigure(letterSpacing(value)),
     });
   }
 }
@@ -327,6 +338,7 @@ _global.ClientInitEditor = ClientInitEditor;
 _global.ClientUpdateContent = ClientUpdateContent;
 _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
+_global.ClientUpdateLetterSpacing = ClientUpdateLetterSpacing;
 _global.ClientUpdateFont = ClientUpdateFont;
 _global.ClientToggleHeading = ClientToggleHeading;
 _global.ClientToggleInlineFormat = ClientToggleInlineFormat;
