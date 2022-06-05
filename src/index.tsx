@@ -248,6 +248,7 @@ function ClientUpdateFontSize(value: number) {
   }
 }
 
+// Value starts from 0, in double.
 function ClientUpdateLetterSpacing(value: number) {
   if (view) {
     view.dispatch({
