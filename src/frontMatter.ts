@@ -15,7 +15,7 @@ export function frontMatter(): Extension {
   return [frontMatterDecorationPlugin, baseTheme];
 }
 
-const frontMatterRE = /^[-]{3}/;
+const frontMatterRE = /^[-+]{3}/;
 const hrRE = /^( ?[-_*]){3,} ?[\t]*$/;
 
 const frontMatterDecorationPlugin = ViewPlugin.fromClass(
