@@ -226,7 +226,11 @@ function ClientInitEditor(doc: string) {
 function ClientUpdateContent(doc: string) {
   if (view) {
     view.dispatch({
-      changes: { from: 0, insert: decodeBase64(doc) },
+      changes: {
+        from: 0,
+        to: view.state.doc.length,
+        insert: decodeBase64(doc),
+      },
     });
   }
 }
