@@ -75,6 +75,26 @@ const listTaskPlugin = ViewPlugin.fromClass(
 
       ) {
         if (!iter.lineBreak) {
+          let m = iter.value.match(olistRE);
+          if (m) {
+            let deco = Decoration.mark({
+              class: 'cm-list-ol',
+              inclusive: true,
+            });
+            decorations.push(
+              deco.range(pos + m[1].length, pos + m[1].length + m[2].length),
+            );
+          }
+        }
+        pos += iter.value.length;
+      }
+
+      for (
+        let pos = from, iter = doc.iterRange(from, to);
+        !iter.next().done;
+
+      ) {
+        if (!iter.lineBreak) {
           let m = iter.value.match(taskRE);
           if (m) {
             let checked = m[3] !== ' ';
@@ -166,7 +186,15 @@ class CheckWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   '.cm-list-ul': {
-    width: '30px',
+    width: '1.5em',
+    verticalAlign: 'middle',
+    display: 'inline-flex',
+    justifyContent: 'center',
+    height: '1.4em', // Line height 23.5px / 16px.
+    alignItems: 'center',
+  },
+  '.cm-list-ol': {
+    width: '1.5em',
     verticalAlign: 'middle',
     display: 'inline-flex',
     justifyContent: 'center',
@@ -179,7 +207,7 @@ const baseTheme = EditorView.baseTheme({
     borderRadius: '50%',
   },
   '.cm-checkbox-wrapper': {
-    width: '30px',
+    width: '1.5em',
     display: 'inline-flex',
     justifyContent: 'center',
   },

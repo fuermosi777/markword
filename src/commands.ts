@@ -15,7 +15,7 @@ const insertTab: StateCommand = ({ state, dispatch }) => {
   if (state.selection.ranges.some((r) => !r.empty))
     return indentMore({ state, dispatch });
   dispatch(
-    state.update(state.replaceSelection(`  `), {
+    state.update(state.replaceSelection(`    `), {
       scrollIntoView: true,
       annotations: [Transaction.userEvent.of('input')],
     }),
@@ -32,7 +32,7 @@ const continueWithLastLine: StateCommand = ({ state, dispatch }) => {
   let dont = null,
     changes = state.changeByRange((range) => {
       if (range.empty && markdownLanguage.isActiveAt(state, range.from)) {
-        // The line where the Enter is pressed.
+        // The line where the the key (Enter) is pressed.
         let line = state.doc.lineAt(range.from);
         let m =
           line.text.match(taskRE) ||
@@ -52,8 +52,11 @@ const continueWithLastLine: StateCommand = ({ state, dispatch }) => {
           }
           let orders = m[0].match(/\d+/g);
           let futureText = m[0];
+
           // If it is a todo bullet, make it unchecked.
           futureText = futureText.replace('[x]', '[ ]');
+
+          // If it is a ordered list.
           if (orders && orders.length > 0) {
             // Ordered list
             let order = (Number(orders[0]) || 0) + 1;
@@ -65,6 +68,7 @@ const continueWithLastLine: StateCommand = ({ state, dispatch }) => {
             while (pos < state.doc.length) {
               let line = state.doc.lineAt(pos);
               let stillList = olistOrderRE.exec(line.text);
+              console.log('is still list?', stillList);
               if (!stillList) break;
               let nextPreSpaces = stillList[1];
               if (nextPreSpaces != preSpaces) break;
