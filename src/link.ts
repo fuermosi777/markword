@@ -1,4 +1,4 @@
-import { Extension } from '@codemirror/state';
+import { EditorSelection, Extension } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
@@ -58,6 +58,7 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
     ) {
       let { doc } = this.view.state;
 
+      // For general link [name](url)
       for (
         let pos = from, cursor = doc.iterRange(from, to), m;
         !cursor.next().done;
@@ -67,12 +68,21 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
           while ((m = linkRE.exec(cursor.value))) {
             // An edge case where link should not preappend a "!", otherwise it would be an image.
             if (m.input[m.index - 1] === '!') continue;
+            // On click move cursor inside link to expand it, the position is the starting position + 1;
+            let cursorPos = pos + m.index + 1;
             const linkDecoration = Decoration.replace({
-              widget: new LinkWidget({
-                displayText: m[1],
-                url: m[2],
-                title: m[3],
-              }),
+              widget: new LinkWidget(
+                {
+                  displayText: m[1],
+                  url: m[2],
+                  title: m[3],
+                },
+                () => {
+                  this.view.dispatch({
+                    selection: EditorSelection.cursor(cursorPos),
+                  });
+                },
+              ),
               inclusive: true,
             });
             decorations.push(
@@ -83,6 +93,7 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
         pos += cursor.value.length;
       }
 
+      // For auto link <url>
       for (
         let pos = from, cursor = doc.iterRange(from, to), m;
         !cursor.next().done;
@@ -90,11 +101,19 @@ const linkDecorationPlugin = ViewPlugin.fromClass(
       ) {
         if (!cursor.lineBreak) {
           while ((m = autoLinkRE.exec(cursor.value))) {
+            let cursorPos = pos + m.index + 1;
             const linkDecoration = Decoration.replace({
-              widget: new LinkWidget({
-                displayText: m[1],
-                url: m[1],
-              }),
+              widget: new LinkWidget(
+                {
+                  displayText: m[1],
+                  url: m[1],
+                },
+                () => {
+                  this.view.dispatch({
+                    selection: EditorSelection.cursor(cursorPos),
+                  });
+                },
+              ),
               inclusive: true,
             });
             decorations.push(
@@ -120,7 +139,7 @@ interface LinkWidgetSpec {
 }
 
 class LinkWidget extends WidgetType {
-  constructor(readonly spec: LinkWidgetSpec) {
+  constructor(readonly spec: LinkWidgetSpec, public onClick: () => void) {
     super();
   }
 
@@ -139,6 +158,10 @@ class LinkWidget extends WidgetType {
       link.title = this.spec.title;
     }
     link.addEventListener('mousedown', (e) => {
+      if (!e.metaKey) {
+        this.onClick();
+        return;
+      }
       let webkit = (<any>window).webkit;
       if (webkit) {
         webkit.messageHandlers.RequestURL.postMessage(this.spec.url);
