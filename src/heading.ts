@@ -131,7 +131,7 @@ const baseTheme = EditorView.baseTheme({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    width: '50px',
+    width: '2em',
     position: 'absolute',
     top: '0',
     right: '100%',
