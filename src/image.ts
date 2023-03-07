@@ -140,6 +140,7 @@ class ImageWidget extends WidgetType {
     image.addEventListener('loadend', function (e) {
       console.log('Image load finished');
     });
+
     return image;
   }
 

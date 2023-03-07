@@ -78,7 +78,7 @@ let colorThemeComp = new Compartment();
 const colorThemeExtension = colorThemeComp.of(getColor());
 
 let activeLineComp = new Compartment();
-const activeLineExtension = activeLineComp.of(showActiveLine());
+const activeLineExtension = activeLineComp.of(hideActiveLine());
 
 let fontSizeComp = new Compartment();
 const fontSizeExtension = fontSizeComp.of(fontSize(16));
