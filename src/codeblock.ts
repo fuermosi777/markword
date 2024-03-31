@@ -91,8 +91,8 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
             codePos.push({ from: codeFrom, to: pos + lineLength });
             this.addLineDecoration('cm-codeblock-end', lineDecorations, pos);
 
-            // Remove line break from previous line.
-            // this.content = this.content.slice(0, -1);
+            // Remove last line break from previous line.
+            this.content = this.content.slice(0, -1);
 
             // Copy button.
             let deco = Decoration.replace({
@@ -122,9 +122,9 @@ const codeblockDecorationPlugin = ViewPlugin.fromClass(
           shouldHide = true;
         }
         if (shouldHide) {
-          // this.addLineDecoration('cm-line-hidden', lineDecorations, cp.from);
+          this.addLineDecoration('cm-line-hidden', lineDecorations, cp.from);
           // 3 is the length of ``` or ~~~, to is the end position of the line so we need to minus 3 to get to the starting point of the line.
-          // this.addLineDecoration('cm-line-hidden', lineDecorations, cp.to - 3);
+          this.addLineDecoration('cm-line-hidden', lineDecorations, cp.to - 3);
         }
       }
     }
@@ -153,9 +153,9 @@ class CopyCodeWidget extends WidgetType {
     span.addEventListener('mousedown', async () => {
       try {
         await navigator.clipboard.writeText(this.text);
-        console.log('done');
+        console.log('Copy successfully');
       } catch (err) {
-        console.log('fail');
+        console.log('Copy failed');
       }
     });
     return span;
@@ -172,8 +172,14 @@ const baseTheme = EditorView.baseTheme({
     fontSize: '0.9em',
     ...codeFontFamily,
   },
-  '.cm-codeblock-start': {},
-  '.cm-codeblock-end': {},
+  '.cm-codeblock-start': {
+    borderTopLeftRadius: '0.4em',
+    borderTopRightRadius: '0.4em',
+  },
+  '.cm-codeblock-end': {
+    borderBottomLeftRadius: '0.4em',
+    borderBottomRightRadius: '0.4em',
+  },
   '.cm-codeblock-copy': {
     position: 'absolute',
     top: 0,
@@ -188,7 +194,8 @@ const baseTheme = EditorView.baseTheme({
   '.cm-codeblock-copy rect,.cm-codeblock-copy path': {
     stroke: '#aaa',
   },
-  '.cm-line-hidden': {
-    display: 'none',
+  // Hide code block front matters when blur.
+  '.cm-line-hidden .tok-meta, .cm-line-hidden .tok-labelName': {
+    opacity: 0,
   },
 });
