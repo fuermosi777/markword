@@ -47,37 +47,37 @@ const lightTheme = EditorView.theme(
     '.cm-hr': {
       backgroundColor: '#CCC',
     },
-    '.cmt-meta': {
+    '.tok-meta': {
       color: '#007AFF',
     },
-    '.cmt-labelName': {
+    '.tok-labelName': {
       color: '#aaa',
     },
-    '.cmt-url': {
+    '.tok-url': {
       color: '#007AFF',
     },
-    '.cmt-variableName': {
+    '.tok-variableName': {
       color: '#fb7c3e',
     },
-    '.cmt-keyword': {
+    '.tok-keyword': {
       color: '#e83461',
     },
-    '.cmt-number': {
+    '.tok-number': {
       color: '#e0b128',
     },
-    '.cmt-propertyName': {
+    '.tok-propertyName': {
       color: '#AC9CF2',
     },
-    '.cmt-operator': {
+    '.tok-operator': {
       color: '#31b4c3',
     },
-    '.cmt-comment': {
+    '.tok-comment': {
       color: '#ccc',
     },
-    '.cmt-string': {
+    '.tok-string': {
       color: '#62a521',
     },
-    '.cmt-punctuation': {
+    '.tok-punctuation': {
       color: '#aaaaaa',
     },
     '.cm-front-matter-start, .cm-front-matter-start *, .cm-front-matter-end *':
@@ -126,37 +126,37 @@ const darkTheme = EditorView.theme(
     '.cm-hr': {
       backgroundColor: '#505050',
     },
-    '.cmt-meta': {
+    '.tok-meta': {
       color: '#0B84FF',
     },
-    '.cmt-labelName': {
+    '.tok-labelName': {
       color: '#aaa',
     },
-    '.cmt-url': {
+    '.tok-url': {
       color: '#0B84FF',
     },
-    '.cmt-variableName': {
+    '.tok-variableName': {
       color: '#FC9867',
     },
-    '.cmt-keyword': {
+    '.tok-keyword': {
       color: '#FF6188',
     },
-    '.cmt-number': {
+    '.tok-number': {
       color: '#FFD866',
     },
-    '.cmt-propertyName': {
+    '.tok-propertyName': {
       color: '#AC9CF2',
     },
-    '.cmt-operator': {
+    '.tok-operator': {
       color: '#78DCE8',
     },
-    '.cmt-comment': {
+    '.tok-comment': {
       color: '#5a5858',
     },
-    '.cmt-string': {
+    '.tok-string': {
       color: '#A8DC76',
     },
-    '.cmt-punctuation': {
+    '.tok-punctuation': {
       color: '#aaaaaa',
     },
     '.cm-front-matter-start, .cm-front-matter-start *, .cm-front-matter-end *':

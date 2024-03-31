@@ -1,9 +1,8 @@
-import { EditorSelection, Extension } from '@codemirror/state';
+import { EditorSelection, Extension, Range } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  Range,
   ViewPlugin,
   ViewUpdate,
   WidgetType,

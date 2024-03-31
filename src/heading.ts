@@ -1,9 +1,8 @@
-import { Extension } from '@codemirror/state';
+import { Extension, Range } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  Range,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -114,7 +113,7 @@ class HeaderIndicatorWidget extends WidgetType {
 
 const baseTheme = EditorView.baseTheme({
   // For headings created by horizontal line below.
-  '.cmt-heading': {
+  '.tok-heading': {
     textDecoration: 'none',
     fontWeight: 'normal',
     fontSize: `${24 / 16}em`,

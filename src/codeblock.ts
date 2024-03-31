@@ -1,9 +1,8 @@
-import { Extension } from '@codemirror/state';
+import { Extension, Range } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  Range,
   ViewPlugin,
   ViewUpdate,
 } from '@codemirror/view';

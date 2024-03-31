@@ -1,10 +1,8 @@
-import { Extension } from '@codemirror/state';
+import { Extension, Range } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  PluginField,
-  Range,
   ViewPlugin,
   ViewUpdate,
 } from '@codemirror/view';
@@ -97,7 +95,10 @@ const blockquoteDecorationPlugin = ViewPlugin.fromClass(
   },
   {
     decorations: (v) => v.decorations,
-    provide: PluginField.atomicRanges.from((v) => v.decorations),
+    provide: (plugin) =>
+      EditorView.atomicRanges.of((view) => {
+        return view.plugin(plugin)?.decorations || Decoration.none;
+      }),
   },
 );
 

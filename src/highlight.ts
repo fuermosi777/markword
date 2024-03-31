@@ -1,4 +1,4 @@
-import { HighlightStyle, tags } from '@codemirror/highlight';
+import { HighlightStyle } from '@codemirror/language';
 
 export const wordmarkHighlightStyle = HighlightStyle.define([
   //   { tag: tags.heading6, textDecoration: 'none' },

@@ -1,9 +1,8 @@
-import { Extension } from '@codemirror/state';
+import { Extension, Range } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  Range,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -166,7 +165,7 @@ const baseTheme = EditorView.baseTheme({
   '.cm-front-matter *': {
     ...codeFontFamily,
   },
-  '.cm-front-matter .cmt-heading': {
+  '.cm-front-matter .tok-heading': {
     fontSize: '0.9em',
   },
 });

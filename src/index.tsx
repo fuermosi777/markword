@@ -12,14 +12,11 @@ import {
   highlightActiveLine,
   keymap,
 } from '@codemirror/view';
-import { standardKeymap } from '@codemirror/commands';
+import { standardKeymap, historyKeymap, history } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { javascriptLanguage } from '@codemirror/lang-javascript';
-import {
-  classHighlightStyle,
-  defaultHighlightStyle,
-} from '@codemirror/highlight';
+import { classHighlighter } from '@lezer/highlight';
 import { phraseEmphasis } from './phraseEmphasis';
 import { heading, headingRE } from './heading';
 import { wordmarkTheme } from './wordmarkTheme';
@@ -30,28 +27,28 @@ import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
 import { webkitPlugins } from './webkit';
 import { lightColor, darkColor } from './colorTheme';
-import { history, historyKeymap } from '@codemirror/history';
 import { hideActiveLine, showActiveLine } from './activeLine';
 import { fontSize, fontFamily, letterSpacing } from './layoutTheme';
 import { frontMatter } from './frontMatter';
+import {
+  syntaxHighlighting,
+  defaultHighlightStyle,
+} from '@codemirror/language';
 
 const extensions = [
   wordmarkTheme(),
   history(),
-  keymap.of([
-    spaceTabBinding,
-    insertNewlineContinueList,
-    ...standardKeymap,
-    ...historyKeymap,
-  ]),
+  keymap.of(standardKeymap),
+  keymap.of(historyKeymap),
+  keymap.of([spaceTabBinding, insertNewlineContinueList]),
   EditorView.lineWrapping,
   markdown({
     defaultCodeLanguage: javascriptLanguage,
     // Disable markdown keymaps.
     addKeymap: false,
   }),
-  defaultHighlightStyle,
-  classHighlightStyle,
+  syntaxHighlighting(defaultHighlightStyle),
+  syntaxHighlighting(classHighlighter),
   EditorView.contentAttributes.of({ spellcheck: 'true' }),
   drawSelection(),
 

@@ -1,9 +1,8 @@
-import { Extension } from '@codemirror/state';
+import { Extension, Range } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  Range,
   ViewPlugin,
   ViewUpdate,
   WidgetType,
@@ -41,7 +40,7 @@ const phraseEmphasisDecorationPlugin = ViewPlugin.fromClass(
       this.decorations = Decoration.set(decorations, true);
 
       // Iterate all decorations and remove those shouldn't be created.
-      let prevFrom: Number, prevTo: Number;
+      let prevFrom: number, prevTo: number;
       this.decorations = this.decorations.update({
         filter: (from, to) => {
           // Filter out decorations if it's wrapped by another emphasis decoration.
@@ -254,7 +253,7 @@ class StrikeThruWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  '.cm-bold, .cmt-strong': {
+  '.cm-bold, .tok-strong': {
     fontWeight: 'bold',
   },
   '.cm-italic': {
