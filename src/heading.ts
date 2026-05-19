@@ -15,6 +15,7 @@ export function heading(): Extension {
 }
 
 export const headingRE = /^#{1,6}\s{1}/;
+const nonHeadingHashRE = /^#{1,6}(?!\s)/;
 const MaxHeadingLevel = 6;
 
 // The plugin reads all lines and adds heading indicators widget (#) and line decorations.
@@ -78,6 +79,14 @@ const headingDecorationPlugin = ViewPlugin.fromClass(
               },
             });
             lineDecorations.push(heading.range(pos));
+          } else {
+            let nonHeadingMatch = iter.value.match(nonHeadingHashRE);
+            if (nonHeadingMatch) {
+              let deco = Decoration.mark({
+                class: 'cm-non-heading-hash',
+              });
+              decorations.push(deco.range(pos, pos + nonHeadingMatch[0].length));
+            }
           }
         }
         pos += iter.value.length;
@@ -135,9 +144,17 @@ const baseTheme = EditorView.baseTheme({
     top: '0',
     right: '100%',
     bottom: '0',
+    fontSize: '16px !important',
   },
   '.cm-h-indicator svg': {
     width: '60%',
     height: '60%',
+  },
+  // Overrides for hashes that are not headings
+  '.cm-non-heading-hash, .cm-non-heading-hash *': {
+    fontSize: '1em !important',
+    fontWeight: 'normal !important',
+    color: 'inherit !important',
+    textDecoration: 'none !important',
   },
 });
