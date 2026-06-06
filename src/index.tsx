@@ -16,6 +16,7 @@ import { standardKeymap, historyKeymap, history } from '@codemirror/commands';
 import { insertNewlineContinueList, spaceTabBinding } from './commands';
 import { markdown } from '@codemirror/lang-markdown';
 import { javascriptLanguage } from '@codemirror/lang-javascript';
+import { GFM } from '@lezer/markdown';
 import { classHighlighter } from '@lezer/highlight';
 import { phraseEmphasis } from './phraseEmphasis';
 import { heading, headingRE } from './heading';
@@ -25,6 +26,7 @@ import { listTask } from './listTask';
 import { image } from './image';
 import { blockquote } from './blockquote';
 import { codeblock } from './codeblock';
+import { table } from './table';
 import { webkitPlugins } from './webkit';
 import { lightColor, darkColor } from './colorTheme';
 import { hideActiveLine, showActiveLine } from './activeLine';
@@ -46,6 +48,7 @@ const extensions = [
     defaultCodeLanguage: javascriptLanguage,
     // Disable markdown keymaps.
     addKeymap: false,
+    extensions: [GFM],
   }),
   syntaxHighlighting(defaultHighlightStyle),
   syntaxHighlighting(classHighlighter),
@@ -59,6 +62,7 @@ const extensions = [
   image(),
   blockquote(),
   codeblock(),
+  table(),
   frontMatter(),
 
   // This must be after hr as otherwise it will alter the class names.

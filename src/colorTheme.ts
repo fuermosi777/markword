@@ -84,6 +84,15 @@ const lightTheme = EditorView.theme(
       {
         color: '#ccc',
       },
+    '.cm-table th, .cm-table td': {
+      borderColor: '#ddd',
+    },
+    '.cm-table thead th': {
+      backgroundColor: 'rgba(240, 240, 240, 0.6)',
+    },
+    '.cm-table tbody tr:nth-child(even) td': {
+      backgroundColor: 'rgba(240, 240, 240, 0.3)',
+    },
   },
   { dark: false },
 );
@@ -163,6 +172,15 @@ const darkTheme = EditorView.theme(
       {
         color: '#5a5858',
       },
+    '.cm-table th, .cm-table td': {
+      borderColor: '#444',
+    },
+    '.cm-table thead th': {
+      backgroundColor: 'rgba(72, 72, 72, 0.6)',
+    },
+    '.cm-table tbody tr:nth-child(even) td': {
+      backgroundColor: 'rgba(72, 72, 72, 0.3)',
+    },
   },
   { dark: true },
 );
