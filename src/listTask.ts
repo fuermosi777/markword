@@ -9,7 +9,7 @@ import {
 } from '@codemirror/view';
 
 // An ordered list or unordered list. Starting with a dash, followed by a whitespace, and not followed by something like "[ ]", which is a task bullet.
-export const ulistRE = /^(\s*)([\*\-\+]\s)(?!(?:\[.\]))(?![\*\-])/;
+export const ulistRE = /^(\s*)([\*\-\+]\s)(?!(?:\[.\]))(?![\*\-]\s)/;
 export const olistRE = /^(\s*)([0-9]+\.)\s/;
 export const taskRE = /^(\s*)([*\-+]\s\[(x| )\]\s)/;
 
