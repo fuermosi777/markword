@@ -1,16 +1,14 @@
-import { Extension, Range } from '@codemirror/state';
+import { EditorState, Extension, Range, StateField, Transaction } from '@codemirror/state';
 import {
   Decoration,
   DecorationSet,
   EditorView,
-  ViewPlugin,
-  ViewUpdate,
   WidgetType,
 } from '@codemirror/view';
 import { syntaxTree } from '@codemirror/language';
 
 export function table(): Extension {
-  return [tablePlugin, baseTheme];
+  return [tableField, baseTheme];
 }
 
 interface TableData {
@@ -20,10 +18,10 @@ interface TableData {
   rows: string[][];
 }
 
-function parseTables(view: EditorView): TableData[] {
+function parseTables(state: EditorState): TableData[] {
   const tables: TableData[] = [];
-  const tree = syntaxTree(view.state);
-  const doc = view.state.doc;
+  const tree = syntaxTree(state);
+  const doc = state.doc;
 
   tree.cursor().iterate((node) => {
     if (node.name !== 'Table') return;
@@ -33,7 +31,6 @@ function parseTables(view: EditorView): TableData[] {
     let head: string[] = [];
     const rows: string[][] = [];
 
-    // Walk children of the Table node.
     const cursor = node.node.cursor();
     if (cursor.firstChild()) {
       do {
@@ -66,53 +63,45 @@ function extractCells(node: any, doc: any): string[] {
   return cells;
 }
 
-function isCursorInTable(view: EditorView, from: number, to: number): boolean {
-  const head = view.state.selection.main.head;
-  return head >= from && head <= to;
+function buildDecorations(state: EditorState): DecorationSet {
+  const decorations: Range<Decoration>[] = [];
+  const cursorHead = state.selection.main.head;
+  const tables = parseTables(state);
+
+  for (const t of tables) {
+    // Show raw markdown when cursor is anywhere inside the table block.
+    if (cursorHead >= t.from && cursorHead <= t.to) continue;
+
+    decorations.push(
+      Decoration.replace({
+        widget: new TableWidget(t),
+        block: true,
+        inclusive: true,
+      }).range(t.from, t.to),
+    );
+  }
+
+  return Decoration.set(decorations, true);
 }
 
-const tablePlugin = ViewPlugin.fromClass(
-  class {
-    decorations: DecorationSet = Decoration.none;
-
-    constructor(public view: EditorView) {
-      this.recompute();
-    }
-
-    update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet || update.viewportChanged) {
-        this.recompute();
-      }
-    }
-
-    recompute() {
-      const decorations: Range<Decoration>[] = [];
-      const tables = parseTables(this.view);
-
-      for (const t of tables) {
-        if (isCursorInTable(this.view, t.from, t.to)) continue;
-
-        const deco = Decoration.replace({
-          widget: new TableWidget(t, this.view),
-          block: true,
-          inclusive: true,
-        });
-        decorations.push(deco.range(t.from, t.to));
-      }
-
-      this.decorations = Decoration.set(decorations, true);
-    }
+// StateField is required for block decorations — ViewPlugin cannot produce them.
+const tableField = StateField.define<DecorationSet>({
+  create(state) {
+    return buildDecorations(state);
   },
-  {
-    decorations: (v) => v.decorations,
+  update(decorations, tr: Transaction) {
+    if (tr.docChanged || tr.selection) {
+      return buildDecorations(tr.state);
+    }
+    return decorations.map(tr.changes);
   },
-);
+  provide(field) {
+    return EditorView.decorations.from(field);
+  },
+});
 
 class TableWidget extends WidgetType {
-  constructor(
-    readonly data: TableData,
-    readonly view: EditorView,
-  ) {
+  constructor(readonly data: TableData) {
     super();
   }
 
@@ -125,14 +114,13 @@ class TableWidget extends WidgetType {
     );
   }
 
-  toDOM() {
+  toDOM(view: EditorView) {
     const wrap = document.createElement('div');
     wrap.className = 'cm-table-wrap';
 
     const tbl = document.createElement('table');
     tbl.className = 'cm-table';
 
-    // Header.
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
     for (const cell of this.data.head) {
@@ -143,12 +131,10 @@ class TableWidget extends WidgetType {
     thead.appendChild(headerRow);
     tbl.appendChild(thead);
 
-    // Body rows.
     if (this.data.rows.length > 0) {
       const tbody = document.createElement('tbody');
       for (const row of this.data.rows) {
         const tr = document.createElement('tr');
-        // Pad or trim to header column count.
         for (let i = 0; i < this.data.head.length; i++) {
           const td = document.createElement('td');
           td.textContent = row[i] ?? '';
@@ -164,11 +150,11 @@ class TableWidget extends WidgetType {
     // Click anywhere on the widget to reveal the raw markdown for editing.
     wrap.addEventListener('mousedown', (e) => {
       e.preventDefault();
-      this.view.dispatch({
+      view.dispatch({
         selection: { anchor: this.data.from },
         scrollIntoView: true,
       });
-      this.view.focus();
+      view.focus();
     });
 
     return wrap;
