@@ -11,6 +11,11 @@ export function table(): Extension {
   return [tableField, baseTheme];
 }
 
+// Module-level cache: maps "from:to" → measured pixel height.
+// Persists across StateField rebuilds so estimatedHeight() is accurate
+// from the second render onwards.
+const heightCache = new Map<string, number>();
+
 interface TableData {
   from: number;
   to: number;
@@ -109,8 +114,11 @@ const tableField = StateField.define<DecorationSet>({
 });
 
 class TableWidget extends WidgetType {
+  private readonly cacheKey: string;
+
   constructor(readonly data: TableData) {
     super();
+    this.cacheKey = `${data.from}:${data.to}`;
   }
 
   eq(other: TableWidget) {
@@ -120,6 +128,12 @@ class TableWidget extends WidgetType {
       JSON.stringify(other.data.head) === JSON.stringify(this.data.head) &&
       JSON.stringify(other.data.rows) === JSON.stringify(this.data.rows)
     );
+  }
+
+  // Returning a positive value lets the height oracle correctly position
+  // everything below the widget without waiting for a DOM measurement round.
+  get estimatedHeight() {
+    return heightCache.get(this.cacheKey) ?? -1;
   }
 
   toDOM(view: EditorView) {
@@ -154,6 +168,19 @@ class TableWidget extends WidgetType {
     }
 
     wrap.appendChild(tbl);
+
+    // After the widget lands in the DOM, measure its actual height and tell
+    // CM6 to update its height oracle so coordinates below it are correct.
+    const cacheKey = this.cacheKey;
+    const ro = new ResizeObserver(() => {
+      const h = wrap.getBoundingClientRect().height;
+      if (h > 0 && h !== heightCache.get(cacheKey)) {
+        heightCache.set(cacheKey, h);
+        view.requestMeasure();
+        ro.disconnect();
+      }
+    });
+    ro.observe(wrap);
 
     // Click anywhere on the widget to reveal the raw markdown for editing.
     wrap.addEventListener('mousedown', (e) => {
