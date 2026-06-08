@@ -72,36 +72,11 @@ function buildDecorations(state: EditorState): DecorationSet {
     // Show raw markdown when cursor is anywhere inside the table block.
     if (cursorHead >= t.from && cursorHead <= t.to) continue;
 
-    const startLine = state.doc.lineAt(t.from);
-    const endLine = state.doc.lineAt(t.to);
-
-    // Render the table as a single block widget placed *before* the first
-    // table line (side: -1). This keeps the widget out of the document's
-    // logical line structure, so CM6's cursor mapping and vertical motion
-    // stay correct.
-    //
-    // A block `Decoration.replace` spanning the whole `from..to` range (i.e.
-    // crossing multiple line breaks) is what previously broke cursor movement
-    // and click-to-position: it collapses many logical lines into one block,
-    // which CM6 cannot map coordinates/vertical motion against. Instead we
-    // hide each underlying line individually with per-line decorations that
-    // never cross a line break, preserving the line map.
     decorations.push(
-      Decoration.widget({
-        widget: new TableWidget(t),
-        block: true,
-        side: -1,
-      }).range(startLine.from),
+      Decoration.replace({
+        widget: new TableWidget(t)
+      }).range(t.from, t.to),
     );
-
-    // Collapse each raw table line to zero height so only the rendered table
-    // shows, while CM6 still sees the lines for cursor/selection purposes.
-    for (let n = startLine.number; n <= endLine.number; n++) {
-      const line = state.doc.line(n);
-      decorations.push(
-        Decoration.line({ class: 'cm-table-source' }).range(line.from),
-      );
-    }
   }
 
   return Decoration.set(decorations, true);
@@ -189,16 +164,6 @@ class TableWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
-  // Collapse the raw markdown lines under the rendered table. They remain in
-  // the document (so cursor/arrow navigation works), but take no space.
-  '.cm-table-source': {
-    display: 'block',
-    height: '0',
-    overflow: 'hidden',
-    padding: '0',
-    margin: '0',
-    lineHeight: '0',
-  },
   '.cm-table-wrap': {
     display: 'block',
     overflowX: 'auto',
