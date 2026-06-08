@@ -96,7 +96,15 @@ const tableField = StateField.define<DecorationSet>({
     return decorations.map(tr.changes);
   },
   provide(field) {
-    return EditorView.decorations.from(field);
+    return [
+      EditorView.decorations.from(field),
+      // Treat each rendered table as one atomic unit so arrow keys and
+      // mouse click coordinates don't get confused by the hidden lines.
+      EditorView.atomicRanges.of((view) => {
+        const decos = view.state.field(field, false);
+        return decos ?? Decoration.none;
+      }),
+    ];
   },
 });
 
