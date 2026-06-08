@@ -11,11 +11,6 @@ export function table(): Extension {
   return [tableField, baseTheme];
 }
 
-// Module-level cache: maps "from:to" → measured pixel height.
-// Persists across StateField rebuilds so estimatedHeight() is accurate
-// from the second render onwards.
-const heightCache = new Map<string, number>();
-
 interface TableData {
   from: number;
   to: number;
@@ -77,13 +72,36 @@ function buildDecorations(state: EditorState): DecorationSet {
     // Show raw markdown when cursor is anywhere inside the table block.
     if (cursorHead >= t.from && cursorHead <= t.to) continue;
 
+    const startLine = state.doc.lineAt(t.from);
+    const endLine = state.doc.lineAt(t.to);
+
+    // Render the table as a single block widget placed *before* the first
+    // table line (side: -1). This keeps the widget out of the document's
+    // logical line structure, so CM6's cursor mapping and vertical motion
+    // stay correct.
+    //
+    // A block `Decoration.replace` spanning the whole `from..to` range (i.e.
+    // crossing multiple line breaks) is what previously broke cursor movement
+    // and click-to-position: it collapses many logical lines into one block,
+    // which CM6 cannot map coordinates/vertical motion against. Instead we
+    // hide each underlying line individually with per-line decorations that
+    // never cross a line break, preserving the line map.
     decorations.push(
-      Decoration.replace({
+      Decoration.widget({
         widget: new TableWidget(t),
         block: true,
-        inclusive: true,
-      }).range(t.from, t.to),
+        side: -1,
+      }).range(startLine.from),
     );
+
+    // Collapse each raw table line to zero height so only the rendered table
+    // shows, while CM6 still sees the lines for cursor/selection purposes.
+    for (let n = startLine.number; n <= endLine.number; n++) {
+      const line = state.doc.line(n);
+      decorations.push(
+        Decoration.line({ class: 'cm-table-source' }).range(line.from),
+      );
+    }
   }
 
   return Decoration.set(decorations, true);
@@ -101,24 +119,13 @@ const tableField = StateField.define<DecorationSet>({
     return decorations.map(tr.changes);
   },
   provide(field) {
-    return [
-      EditorView.decorations.from(field),
-      // Treat each rendered table as one atomic unit so arrow keys and
-      // mouse click coordinates don't get confused by the hidden lines.
-      EditorView.atomicRanges.of((view) => {
-        const decos = view.state.field(field, false);
-        return decos ?? Decoration.none;
-      }),
-    ];
+    return EditorView.decorations.from(field);
   },
 });
 
 class TableWidget extends WidgetType {
-  private readonly cacheKey: string;
-
   constructor(readonly data: TableData) {
     super();
-    this.cacheKey = `${data.from}:${data.to}`;
   }
 
   eq(other: TableWidget) {
@@ -128,12 +135,6 @@ class TableWidget extends WidgetType {
       JSON.stringify(other.data.head) === JSON.stringify(this.data.head) &&
       JSON.stringify(other.data.rows) === JSON.stringify(this.data.rows)
     );
-  }
-
-  // Returning a positive value lets the height oracle correctly position
-  // everything below the widget without waiting for a DOM measurement round.
-  get estimatedHeight() {
-    return heightCache.get(this.cacheKey) ?? -1;
   }
 
   toDOM(view: EditorView) {
@@ -169,19 +170,6 @@ class TableWidget extends WidgetType {
 
     wrap.appendChild(tbl);
 
-    // After the widget lands in the DOM, measure its actual height and tell
-    // CM6 to update its height oracle so coordinates below it are correct.
-    const cacheKey = this.cacheKey;
-    const ro = new ResizeObserver(() => {
-      const h = wrap.getBoundingClientRect().height;
-      if (h > 0 && h !== heightCache.get(cacheKey)) {
-        heightCache.set(cacheKey, h);
-        view.requestMeasure();
-        ro.disconnect();
-      }
-    });
-    ro.observe(wrap);
-
     // Click anywhere on the widget to reveal the raw markdown for editing.
     wrap.addEventListener('mousedown', (e) => {
       e.preventDefault();
@@ -201,6 +189,16 @@ class TableWidget extends WidgetType {
 }
 
 const baseTheme = EditorView.baseTheme({
+  // Collapse the raw markdown lines under the rendered table. They remain in
+  // the document (so cursor/arrow navigation works), but take no space.
+  '.cm-table-source': {
+    display: 'block',
+    height: '0',
+    overflow: 'hidden',
+    padding: '0',
+    margin: '0',
+    lineHeight: '0',
+  },
   '.cm-table-wrap': {
     display: 'block',
     overflowX: 'auto',
