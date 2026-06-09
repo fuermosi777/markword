@@ -168,4 +168,8 @@ const baseTheme = EditorView.baseTheme({
   '.cm-front-matter .tok-heading': {
     fontSize: '0.9em',
   },
+  // The opening --- is not a tok-meta token so the codeblock rule misses it.
+  '.cm-front-matter-start.cm-line-hidden *': {
+    opacity: '0',
+  },
 });
