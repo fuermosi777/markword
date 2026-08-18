@@ -28,14 +28,18 @@ html {
   height: 100%;
 }
 
+// Horizontal padding is controlled dynamically via the horizontalMargin
+// theme extension (see layoutTheme.ts), configurable from Settings.
 @media only screen and (max-width: 599px) {
   .cm-scroller {
-    padding: 20px 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
   }
 }
 
 @media only screen and (min-width: 600px) {
   .cm-scroller {
-    padding: 60px 10%;
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
 }

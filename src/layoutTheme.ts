@@ -26,3 +26,16 @@ export function fontFamily(
     },
   });
 }
+
+// When dynamic is true, the margin is a percentage of the viewport
+// width with no cap, so it grows as the window widens. When dynamic is
+// false, the margin is a fixed pixel value regardless of window width.
+export function horizontalMargin(value: number = 10, dynamic: boolean = true): Extension {
+  const padding = dynamic ? `${value}%` : `${value}px`;
+  return EditorView.theme({
+    '.cm-scroller': {
+      paddingLeft: padding,
+      paddingRight: padding,
+    },
+  });
+}

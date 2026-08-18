@@ -30,7 +30,7 @@ import { table } from './table';
 import { webkitPlugins } from './webkit';
 import { lightColor, darkColor } from './colorTheme';
 import { hideActiveLine, showActiveLine } from './activeLine';
-import { fontSize, fontFamily, letterSpacing } from './layoutTheme';
+import { fontSize, fontFamily, letterSpacing, horizontalMargin } from './layoutTheme';
 import { frontMatter } from './frontMatter';
 import {
   syntaxHighlighting,
@@ -89,6 +89,9 @@ const letterSpacingExtension = letterSpacingComp.of(letterSpacing(0));
 
 let fontFamilyComp = new Compartment();
 const fontFamilyExtension = fontFamilyComp.of(fontFamily());
+
+let horizontalMarginComp = new Compartment();
+const horizontalMarginExtension = horizontalMarginComp.of(horizontalMargin());
 
 // State for debugging.
 let debugState = EditorState.create({
@@ -175,6 +178,7 @@ function makeExtensions() {
     fontSizeExtension,
     fontFamilyExtension,
     letterSpacingExtension,
+    horizontalMarginExtension,
   ];
 }
 
@@ -270,6 +274,18 @@ function ClientUpdateFont(name: string) {
   }
 }
 
+// When dynamic is true, value is a percentage of viewport width. When
+// dynamic is false, value is a fixed pixel amount.
+function ClientUpdateHorizontalMargin(value: number, dynamic: boolean) {
+  if (view) {
+    view.dispatch({
+      effects: horizontalMarginComp.reconfigure(
+        horizontalMargin(value, dynamic),
+      ),
+    });
+  }
+}
+
 function ClientToggleActiveLine(on: boolean) {
   if (view) {
     view.dispatch({
@@ -346,6 +362,7 @@ _global.ClientToggleActiveLine = ClientToggleActiveLine;
 _global.ClientUpdateFontSize = ClientUpdateFontSize;
 _global.ClientUpdateLetterSpacing = ClientUpdateLetterSpacing;
 _global.ClientUpdateFont = ClientUpdateFont;
+_global.ClientUpdateHorizontalMargin = ClientUpdateHorizontalMargin;
 _global.ClientToggleHeading = ClientToggleHeading;
 _global.ClientToggleInlineFormat = ClientToggleInlineFormat;
 _global.ClientInsert = ClientInsert;
